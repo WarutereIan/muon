@@ -1,0 +1,13 @@
+node_modules
+
+**/target
+**/.cargo
+**/yarn.lock
+
+**/.env
+
+
+.vscode/*
+
+contracts/cache/*
+contracts/out/*
