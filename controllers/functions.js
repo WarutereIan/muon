@@ -1,14 +1,22 @@
-const {ethers} = require('ethers')
+const User = require('../models/User')
+const ethersFunctions =  require('../config/ethersCOnfig')
 
-const network = 'goerli'
-const provider = ethers.getDefaultProvider(network)
+const functions = {
+    //view on-chain token balance
+    viewBalance: async (req, res)=>{
+        const {uid} = req.params
+        const user = await User.findOne({uid})
+        const address = user.walletAddress
+        var balance = ethersFunctions.getAccountBalance(address)
+        return res.status(200).json({accountBalance: balance})
+    },
 
-export const functions = {
-    viewBalance: (wallet)=>{
-        
-        const balanceInWei = provider.getBalance(wallet)
-        const balanceInEth = ethers.utils.formatEther(balanceInWei)
-        return balanceInEth
+    //uses the user's account id as the referral code, which new users will use for signup
+    inviteUser: async (req,res)=>{
+        const {uid} = req.params
+        res.json({inviteCode:uid})
     }
 
 }
+
+module.exports = functions
