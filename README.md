@@ -1,13 +1,12 @@
-# Sample Hardhat Project
+#Project Muon 
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+has similar functionality to the Pi network:
+users get rewarded for logging in within the last 24h
+the mining rate also increases based on the number of users they bring on board
 
-Try running some of the following tasks:
+launched on the ethereum blockchain via infura provider
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+will be modified to run on own blockchain with own consensus protocol later:
+therefore seperate blockchain will be developed
+
+for now can be run on a local fork
