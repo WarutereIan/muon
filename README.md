@@ -1,4 +1,4 @@
-#Project Muon 
+**#Project Muon **
 
 has similar functionality to the Pi network:
 users get rewarded for logging in within the last 24h
