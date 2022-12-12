@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt') 
 const User = require('../models/User')
-const mongoose = require('mongoose')
-const{ethers} = require('ethers')
+const Wallet = require('../models/Wallet')
+const ethersFunctions = require('../config/ethersCOnfig')
 require('dotenv').config()
 
 
@@ -50,11 +50,24 @@ signup: async (req,res)=>{
     }  
     
     
-    const wallet = ethers.Wallet.createRandom()
+    const walletObject = await ethersFunctions.createWallet()
+    
+    const   address= walletObject.address,
+            mnemonic_phrase = walletObject.mnemonic.phrase,
+            privateKey = walletObject.privateKey
+    
+
+    console.log(mnemonic_phrase)
     const password = await bcrypt.hash(pass,10) 
     const lastlogin = new Date()
-    const user = await User.create({username,password,wallet,lastlogin})
+    //create user document
+    const user = await User.create({username,password,lastlogin})
     const userId =  user._id
+    //create wallet document with all fields filled in
+    const wallet = await Wallet.create({userId,address,mnemonic_phrase,privateKey})
+    
+    //update user document with wallet id
+    await User.findOneAndUpdate({username:username},{wallet: wallet._id}).exec()
     //find person who referred new user and add new user to their list of referrals
     if(referralId){
 
@@ -62,8 +75,9 @@ signup: async (req,res)=>{
      }
     
     //generate token to keep user signed in
-    const token =jwt.sign({userId},privateKey,{expiresIn: '1h'})
-    user.sessionToken = token
+    const token = await jwt.sign({userId},privateKey,{expiresIn: '1h'})
+    //update user session token
+    await User.findOneAndUpdate({username:username},{sessionToken: token}).exec()
     res.json({"userid": userId,"signup_success":"true"})
 
 },

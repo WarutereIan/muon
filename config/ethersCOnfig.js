@@ -19,6 +19,10 @@ const ethersFunctions = {
     },
     makeBatchPayment: async ()=>{
 
+    },
+    createWallet: async ()=>{
+        const wallet = await ethers.Wallet.createRandom().connect(provider)
+        return wallet
     }
 
 }

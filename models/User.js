@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
         required: [true,'enter password'],
         minLength:[6,'password should not be less than 6 characters']    
     },
-    walletAddress: {type: String, required: true},
+    wallet: {type: mongoose.Schema.Types.ObjectId, ref: 'Wallet'},
     lastlogin:{type: Date},
     sessionToken:{type: String},
     usersReferred:[]
