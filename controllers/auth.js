@@ -62,7 +62,8 @@ signup: async (req,res)=>{
     const lastlogin = new Date()
     //create user document
     const user = await User.create({username,password,lastlogin})
-    const userId =  user._id
+    const dirtyuserId =  JSON.stringify(user._id)
+    const userId = dirtyuserId.replace(/([^a-z0-9]+)/gi, '')
     //create wallet document with all fields filled in
     const wallet = await Wallet.create({userId,address,mnemonic_phrase,privateKey})
     
