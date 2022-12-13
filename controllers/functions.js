@@ -1,5 +1,5 @@
 const User = require('../models/User')
-const ethersFunctions =  require('../config/ethersCOnfig')
+const ethersFunctions =  require('../config/ethersConfig')
 
 const functions = {
     //view on-chain token balance
@@ -14,8 +14,10 @@ const functions = {
     //uses the user's account id as the referral code, which new users will use for signup
     inviteUser: async (req,res)=>{
         const {uid} = req.params
-        res.json({inviteCode:uid})
-    }
+        res.json({"inviteCode":uid})
+    },
+    
+
 
 }
 

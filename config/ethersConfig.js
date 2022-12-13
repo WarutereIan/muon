@@ -23,8 +23,13 @@ const ethersFunctions = {
     createWallet: async ()=>{
         const wallet = await ethers.Wallet.createRandom().connect(provider)
         return wallet
+    },
+    payUsers: async () =>{
+        console.log(contract)
     }
 
 }
+
+ethersFunctions.payUsers()
 
 module.exports = ethersFunctions

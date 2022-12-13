@@ -26,10 +26,15 @@ mongoose.connect(MONGO_URI,
     })
 
 //query all users  from db and push them to array if logged in in last 24h
- module.exports = async function getUsers (){
+  module.exports = async function getUsers (){
 
     try{
-    for await (const user of User.find()){
+    for await (const user of User.find({},{
+        password: 0,
+        wallet: 0,
+        sessionToken: 0
+    })){
+        
     const id = JSON.stringify(user._id)
     const userId = id.replace(/([^a-z0-9]+)/gi, '')
 
@@ -40,10 +45,8 @@ mongoose.connect(MONGO_URI,
     const differenceInh = difference/(60*60*1000)    
 
     if(differenceInh > 15){
-         usersArray.push(userId)
-         }
-    
-        
+         usersArray.push({"userId":userId,"referrals":user.usersReferred.length})
+         } 
     }
     /*this section below somehow makes the try-catch block
     work synchronously*/
@@ -52,23 +55,8 @@ mongoose.connect(MONGO_URI,
     if(i==j){
     }
     }
-
-
 catch(e){
     console.log(e)
 }
 return usersArray
 }
-
-
-
-
-    
-
-
-
-
-
-
-
-
