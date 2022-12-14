@@ -18,7 +18,8 @@ export const contract = new ethers.Contract(tokenAddress,axtrumABI,OwnerWallet)
 
 const ethersFunctions = {
     getAccountBalance: async (address)=>{
-        const balance = await contract.balanceOf(address)
+        const balanceRaw = await contract.balanceOf(address)
+        var balance = ethers.utils.formatUnits(balanceRaw)
         return balance
     },
     createWallet: async ()=>{

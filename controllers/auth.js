@@ -88,6 +88,7 @@ signup: async (req,res)=>{
     res.json({"userid": userId,"signup_success":"true"})
 
 },
+//verify that session is still on
 sessionAuth: async (req,res,next)=>{
     const {uid} =  req.params
     const user = await User.findOne({_id:uid},{sessionToken:1})
@@ -95,25 +96,20 @@ sessionAuth: async (req,res,next)=>{
     
     try{
         payload = verify(token, SECRET_KEY)
-        console.log(payload)
     }
     catch(e){
         if (e instanceof JsonWebTokenError){
             console.log(e)
+            return res.status(400)
+            .json({"loggedIn": false})
         }
     }
-    const nowUnixSeconds = Math.round(Number(new Date())/1000)
-    /*this here will determine auto logout time, requiring user to login
-     default will be 1h*/
-    if (payload.exp - nowUnixSeconds < 1*60*60){
-        console.log('login ok')
+    
         return    next()    
     }
-    return res.status(400)
-            .json({"loggedIn": false})
     
 }
-}
+
 
 export default auth
 

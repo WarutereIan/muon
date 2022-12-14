@@ -8,8 +8,9 @@ const functions = {
         const {uid} = req.params
         const wallet = await Wallet.findOne({userId:uid},{address: 1})
         const address = wallet.address
-        var balance = ethersFunctions.getAccountBalance(address)
-        return res.status(200).json({"accountBalance": balance})
+        var balance = await ethersFunctions.getAccountBalance(address)
+        console.log(balance)
+        return res.status(200).json({"accountTokenBalance": balance})
     },
 
     //uses the user's account id as the referral code, which new users will use for signup
