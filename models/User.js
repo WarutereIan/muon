@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
     username: {type: String, 
         unique: [true,'username taken, try another username'],
         required: [true,'enter username']},
@@ -9,11 +9,11 @@ const UserSchema = new mongoose.Schema({
         required: [true,'enter password'],
         minLength:[6,'password should not be less than 6 characters']    
     },
-    wallet: {type: mongoose.Schema.Types.ObjectId, ref: 'Wallet'},
+    wallet: {type: Schema.Types.ObjectId, ref: 'Wallet'},
     lastlogin:{type: Date},
     sessionToken:{type: String},
     usersReferred:[]
 
 })
 
-module.exports =  mongoose.model('User',UserSchema)
+export default  model('User',UserSchema)

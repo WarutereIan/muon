@@ -1,14 +1,15 @@
-const User = require('../models/User')
-const ethersFunctions =  require('../config/ethersConfig')
+import User from '../models/User.js'
+import ethersFunctions from '../config/ethersConfig.js'
+import Wallet from '../models/Wallet.js'
 
 const functions = {
     //view on-chain token balance
     viewBalance: async (req, res)=>{
         const {uid} = req.params
-        const user = await User.findOne({uid})
-        const address = user.walletAddress
+        const wallet = await Wallet.findOne({userId:uid},{address: 1})
+        const address = wallet.address
         var balance = ethersFunctions.getAccountBalance(address)
-        return res.status(200).json({accountBalance: balance})
+        return res.status(200).json({"accountBalance": balance})
     },
 
     //uses the user's account id as the referral code, which new users will use for signup
@@ -21,4 +22,4 @@ const functions = {
 
 }
 
-module.exports = functions
+export default functions

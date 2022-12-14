@@ -1,11 +1,11 @@
-const mongoose = require('mongoose')
-const User = require('./User')
+import { Schema, model } from 'mongoose'
+import User from './User.js'
 
-const walletSchema = new mongoose.Schema({
+const walletSchema = new Schema({
     userId:{type: String},
     address:{type: String},
     mnemonic_phrase: {type: String},
     privateKey:{type: String}
 })
 
-module.exports = mongoose.model('Wallet',walletSchema)
+export default model('Wallet',walletSchema)

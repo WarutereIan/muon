@@ -1,13 +1,14 @@
-const express = require('express');
-const routes = require('./routes/routes')
-const mongoose = require('mongoose')
-require('dotenv').config()
+import express, { json, urlencoded } from 'express';
+import routes from './routes/routes.js';
+import { connect } from 'mongoose';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const MONGO_URI = process.env.MONGO_URI
 
 const app = express();
 
-mongoose.connect(MONGO_URI,
+connect(MONGO_URI,
     (err)=>{
         if(err){
             return console.log(err)
@@ -15,8 +16,8 @@ mongoose.connect(MONGO_URI,
         console.log('connected to db successfully')
     })
 
-app.use(express.json())
-app.use(express.urlencoded({extended:false}))
+app.use(json())
+app.use(urlencoded({extended:false}))
 app.use(routes)
 
 app.listen(5000,()=>{

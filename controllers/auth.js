@@ -1,17 +1,19 @@
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt') 
-const User = require('../models/User')
-const Wallet = require('../models/Wallet')
-const ethersFunctions = require('../config/ethersCOnfig')
-require('dotenv').config()
+import pkg from 'jsonwebtoken'
+import { compare, hash } from 'bcrypt' 
+import User from '../models/User.js'
+import Wallet from '../models/Wallet.js'
+import ethersFunctions from '../config/ethersConfig.js'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-
-const privateKey = process.env.SECRET_KEY
+const { sign, verify, JsonWebTokenError } = pkg
+const SECRET_KEY = process.env.SECRET_KEY
+var payload
 
 //provides auth functions
 const auth ={
     login: async (req,res,next)=>{
-    const {username,password} = req.body
+    const {username,pass} = req.body
     const user = await User.findOne({username})
     
     if(!user){
@@ -21,18 +23,22 @@ const auth ={
 
     const hashed = user.password
     const userId = user._id
+    const lastlogin = new Date()
+
+
+    var rightPassword = await compare(pass,hashed)
 
     //generate user login token if password is correct
-    if(await bcrypt.compare(password,hashed)){
-    const token = jwt.sign({userId},privateKey,{expiresIn: '1h'}) 
+    if(rightPassword){
+    const token = sign({userId},SECRET_KEY,{expiresIn: '1h'}) 
     //update user session token
-    await user.updateOne({ },{sessionToken: token}, (err)=>{
+    User.findOneAndUpdate({username:username },{sessionToken: token,lastlogin: lastlogin}, (err)=>{
         if(err){
             console.log(err)
         }
         console.log('token updated succesfully')
     })
-
+    
    
     return res.json({"userid": userId,"login_success":"true"})
     }
@@ -57,8 +63,8 @@ signup: async (req,res)=>{
             privateKey = walletObject.privateKey
     
 
-    console.log(mnemonic_phrase)
-    const password = await bcrypt.hash(pass,10) 
+    console.log(address)
+    const password = await hash(pass,10) 
     const lastlogin = new Date()
     //create user document
     const user = await User.create({username,password,lastlogin})
@@ -76,7 +82,7 @@ signup: async (req,res)=>{
      }
     
     //generate token to keep user signed in
-    const token = await jwt.sign({userId},privateKey,{expiresIn: '1h'})
+    const token = await sign({userId},privateKey,{expiresIn: '1h'})
     //update user session token
     await User.findOneAndUpdate({username:username},{sessionToken: token}).exec()
     res.json({"userid": userId,"signup_success":"true"})
@@ -84,26 +90,31 @@ signup: async (req,res)=>{
 },
 sessionAuth: async (req,res,next)=>{
     const {uid} =  req.params
-    const user = await User.findOne({uid})
+    const user = await User.findOne({_id:uid},{sessionToken:1})
     const token = user.sessionToken
+    
     try{
-        payload = jwt.verify(token, privateKey)
+        payload = verify(token, SECRET_KEY)
+        console.log(payload)
     }
     catch(e){
-        if (e instanceof jwt.JsonWebTokenError){
+        if (e instanceof JsonWebTokenError){
             console.log(e)
         }
     }
     const nowUnixSeconds = Math.round(Number(new Date())/1000)
-    if (payload.exp - nowUnixSeconds > 1*60*60){
-        res.satus(400)
-            .json({loggedIn: false})
+    /*this here will determine auto logout time, requiring user to login
+     default will be 1h*/
+    if (payload.exp - nowUnixSeconds < 1*60*60){
+        console.log('login ok')
+        return    next()    
     }
-    next()
+    return res.status(400)
+            .json({"loggedIn": false})
     
 }
 }
 
-module.exports = auth
+export default auth
 
 
