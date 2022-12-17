@@ -34,13 +34,12 @@ async function getPayableWallets(){
         amount = BigInt(amountInt)
         console.log(amount)
         amountsArray.push(amount)
+        //send tokens from owner's wallet
         await contract.transfer(addr,amount)
-        // var bal =await contract.balanceOf(OwnerWallet.address)
+        
     if(i == userids.length - 1){
         console.log(walletsArray)
         console.log(amountsArray)
-        //var balInEth = ethers.utils.formatUnits(bal)
-        //console.log(balInEth)
         }
         
     }  

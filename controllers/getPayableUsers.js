@@ -45,7 +45,7 @@ connect(MONGO_URI,
     const difference = timeNow - lastloginInstance
     const differenceInh = difference/(60*60*1000)    
 
-    if(differenceInh < 10){
+    if(differenceInh < 24){
          usersArray.push({"userId":userId,"referrals":BigInt(user.usersReferred.length)})
         } 
     }

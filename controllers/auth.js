@@ -13,12 +13,23 @@ var payload
 //provides auth functions
 const auth ={
     login: async (req,res,next)=>{
-    const {username,pass} = req.body
-    const user = await User.findOne({username})
+    var user
+
+    const {username,pass,email} = req.body
+    if(username){
+        user = await User.findOne({username})
+
+    }
+    else if(email){
+        user = await User.findOne({email})
+    }
+    else{
+        return res.json({"error":"enter email or password"})
+    }
     
     if(!user){
         //include custom error handling
-        return res.send('unregistered user')
+        return res.json({"error":"unregistered user"})
     }
 
     const hashed = user.password
@@ -32,10 +43,11 @@ const auth ={
     if(rightPassword){
     const token = sign({userId},SECRET_KEY,{expiresIn: '1h'}) 
     //update user session token
-    User.findOneAndUpdate({username:username },{sessionToken: token,lastlogin: lastlogin}, (err)=>{
+    User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin}, (err,res)=>{
         if(err){
             console.log(err)
         }
+
         console.log('token updated succesfully')
     })
     
@@ -47,13 +59,25 @@ const auth ={
     }
 }, 
 signup: async (req,res)=>{
-
+    try{
     //referralId is equivalent to userId
-    const {username,pass,referralId} = req.body
+    const {username,pass,email,referredBy,country} = req.body
     
-    if(!username || !pass){
-        res.status(401).send('please enter credentials')
+    const emailRegisteredBool = await User.findOne({email})
+    const usernameTakenBool = await User.findOne({username})
+
+    if(!username || !pass || !email || !referredBy || !country){
+        return res.json({"error":'please enter all credentials'})
     }  
+
+    if(emailRegisteredBool){
+       return res.json({"error":'email already registered'})
+    }
+    if(usernameTakenBool){
+        return res.json({"error":"username already taken"})
+    }
+
+    
     
     
     const walletObject = await ethersFunctions.createWallet()
@@ -63,29 +87,37 @@ signup: async (req,res)=>{
             privateKey = walletObject.privateKey
     
 
-    console.log(address)
+    console.log(`wallet created at address ${address}`)
     const password = await hash(pass,10) 
     const lastlogin = new Date()
     //create user document
-    const user = await User.create({username,password,lastlogin})
+    const user = await newUser(username,password,email,referredBy,country,lastlogin)
+
+    
     const dirtyuserId =  JSON.stringify(user._id)
     const userId = dirtyuserId.replace(/([^a-z0-9]+)/gi, '')
     //create wallet document with all fields filled in
     const wallet = await Wallet.create({userId,address,mnemonic_phrase,privateKey})
+    console.log(`wallet created in db successfully`)
     
     //update user document with wallet id
     await User.findOneAndUpdate({username:username},{wallet: wallet._id}).exec()
     //find person who referred new user and add new user to their list of referrals
-    if(referralId){
+    if(referredBy){
 
-        User.findOneAndUpdate({_id: referralId}, {$push:{usersReferred:userId}}).exec()
+        User.findOneAndUpdate({_id: referredBy}, {$push:{usersReferred:userId}}).exec()
      }
     
     //generate token to keep user signed in
     const token = await sign({userId},privateKey,{expiresIn: '1h'})
     //update user session token
     await User.findOneAndUpdate({username:username},{sessionToken: token}).exec()
-    res.json({"userid": userId,"signup_success":"true"})
+    res.json({"user": user,"signup_success":"true"})
+    }
+    catch(error){
+        console.log(error)
+        res.send(error)
+    }
 
 },
 //verify that session is still on
@@ -110,6 +142,16 @@ sessionAuth: async (req,res,next)=>{
     
 }
 
+async function newUser(username,password,email,referredBy,country,lastlogin) {
+    try{
+       return  await User.create({username,password,lastlogin,email,referredBy,country,lastlogin})
+        
+        }
+                catch(error){
+                    console.log(error);
+                }}
+
+                
 
 export default auth
 
