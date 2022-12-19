@@ -61,12 +61,12 @@ const auth ={
 signup: async (req,res)=>{
     try{
     //referralId is equivalent to userId
-    const {username,pass,email,referredBy,country} = req.body
+    const {username,pass,email,referredBy,country, fullname} = req.body
     
     const emailRegisteredBool = await User.findOne({email})
     const usernameTakenBool = await User.findOne({username})
 
-    if(!username || !pass || !email || !referredBy || !country){
+    if(!username || !pass || !email || !referredBy || !country ||!fullname){
         return res.json({"error":'please enter all credentials'})
     }  
 
@@ -91,7 +91,7 @@ signup: async (req,res)=>{
     const password = await hash(pass,10) 
     const lastlogin = new Date()
     //create user document
-    const user = await newUser(username,password,email,referredBy,country,lastlogin)
+    const user = await newUser(username,password,email,referredBy,country,lastlogin, fullname)
 
     
     const dirtyuserId =  JSON.stringify(user._id)
@@ -142,9 +142,9 @@ sessionAuth: async (req,res,next)=>{
     
 }
 
-async function newUser(username,password,email,referredBy,country,lastlogin) {
+async function newUser(username,password,email,referredBy,country,lastlogin,fullname) {
     try{
-       return  await User.create({username,password,lastlogin,email,referredBy,country,lastlogin})
+       return  await User.create({username,password,email,referredBy,country,lastlogin,fullname})
         
         }
                 catch(error){

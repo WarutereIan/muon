@@ -6,6 +6,11 @@ const {isEmail} = pkg
 const UserSchema = new Schema({
     username: {type: String,
         required: [true,'enter username']},
+    fullname: {
+        type: String,
+        required: [true]
+    }    
+        ,
     password: {
         type: String,
         required: [true,'enter password'],
