@@ -51,7 +51,7 @@ const auth ={
     })
     
    
-    return res.json({"error":false,"user": user})
+    return res.json({"error":false,"userDetails": user})
     }
     else{
         res.json({"error":true,"error-message":"invalid password"})
@@ -114,7 +114,7 @@ signup: async (req,res)=>{
         if(err) console.log(err)
         console.log(res)
     })
-    res.json({"error":false,"user": user,})
+    res.json({"error":false,"userDetails": user,})
     }
     catch(error){
         console.log(error)
@@ -135,7 +135,7 @@ sessionAuth: async (req,res,next)=>{
         if (e instanceof JsonWebTokenError){
             console.log(e)
             return res.status(400)
-            .json({"error":true,"loggedIn": false})
+            .json({"error":true,"errorMessage":"User session timed out"})
         }
     }
     

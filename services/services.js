@@ -45,7 +45,7 @@ const services = {
 
     transporter.sendMail(options, (error,info)=>{
         if(error) {console.log(error)
-        res.send("error. contact systems admin")}
+        res.json({"error":true,"error-message":"error. contact systems admin"})}
         else {
             console.log(info)
         res.send('Verification email sent')
@@ -71,7 +71,7 @@ const services = {
                     }
                     console.log(res)
                 })
-                res.json({"error":"false", user: res})
+                res.json({"error":"false", userDetails: res})
             }
             else{
                 res.json({"error":true,"error-message":"Invalid verification code. Please try again"})
