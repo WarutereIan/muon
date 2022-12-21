@@ -2,6 +2,7 @@ import User from '../models/User.js'
 import ethersFunctions from '../config/ethersConfig.js'
 import Wallet from '../models/Wallet.js'
 
+
 const functions = {
     //view on-chain token balance
     viewBalance: async (req, res)=>{
@@ -18,7 +19,7 @@ const functions = {
         const {uid} = req.params
         res.json({"inviteCode":uid})
     },
-    
+
 
 
 }

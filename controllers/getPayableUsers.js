@@ -26,11 +26,11 @@ connect(MONGO_URI,
         console.log('connected to db')
     })
 
-//query all users  from db and push them to array if logged in in last 24h
+//query all verified users  from db and push them to array if logged in in last 24h
   async function getUsers (){
 
     try{
-    for await (const user of User.find({},{
+    for await (const user of User.find({verified: true},{
         password: 0,
         wallet: 0,
         sessionToken: 0
