@@ -9,6 +9,7 @@ dotenv.config()
 const { sign, verify, JsonWebTokenError } = pkg
 const SECRET_KEY = process.env.SECRET_KEY
 
+
 //provides auth functions
 const auth ={
     login: async (req,res,next)=>{
@@ -74,10 +75,7 @@ signup: async (req,res)=>{
     }
     if(usernameTakenBool){
         return res.json({"error":true,"error":"username already taken"})
-    }
-
-    n
-    
+    }    
     
     const walletObject = await ethersFunctions.createWallet()
     
@@ -108,11 +106,15 @@ signup: async (req,res)=>{
      }
     
     //generate token to keep user signed in
-    const token = await sign({userId},privateKey,{expiresIn: '1h'})
+    const token = await sign({userId},SECRET_KEY,{expiresIn: '1h'})
+    console.log(`user token: ${token}`)
     //update user session token
-    User.findOneAndUpdate({username:username},{sessionToken: token},(err,res)=>{
-        if(err) console.log(err)
-        console.log(res)
+    User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin}, (err,res)=>{
+        if(err){
+            console.log(err)
+        }
+
+        console.log('token updated succesfully')
     })
     res.json({"error":false,"userDetails": user,})
     }
@@ -126,10 +128,12 @@ signup: async (req,res)=>{
 sessionAuth: async (req,res,next)=>{
     const {uid} =  req.params
     const user = await User.findOne({_id:uid},{sessionToken:1})
+    console.log(user)
     const token = user.sessionToken
     
+    
     try{
-        payload = verify(token, SECRET_KEY)
+        await verify(token, SECRET_KEY)
     }
     catch(e){
         if (e instanceof JsonWebTokenError){

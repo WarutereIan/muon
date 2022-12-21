@@ -44,6 +44,9 @@ const UserSchema = new Schema({
     verified: {
         type: Boolean,
         default: false
+    },
+    sessionToken: {
+        type: String
     }
 
 

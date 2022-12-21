@@ -19,6 +19,7 @@ const services = {
 
         const user = await User.findOne({_id:uid},{email:1, verified:1})
         
+        
         if(user.verified){
             return res.json({"error":true,"error-message":"Email already verified"})
         }
@@ -65,13 +66,8 @@ const services = {
         try{     
         
             if(verificationCode == token){
-                User.findOneAndUpdate({_id:uid},{verified: true},(err,res)=>{
-                    if(err){
-                        console.log(err)
-                    }
-                    console.log(res)
-                })
-                res.json({"error":"false", userDetails: res})
+                const user = await User.findOneAndUpdate({_id:uid},{verified: true})
+                return res.json({"error":"false", "userDetails":user })
             }
             else{
                 res.json({"error":true,"error-message":"Invalid verification code. Please try again"})
