@@ -12,7 +12,7 @@ const functions = {
         const {uid} = req.params
         const wallet = await Wallet.findOne({userId:uid},{address: 1})
         const address = wallet.address
-        var user = await User.findOne({userId:uid},{usersReferred: 1})
+        var user = await User.findOne({_id:uid},{usersReferred: 1})
         var invitedObj = user.usersReferred
         var usersArray = Object.values(invitedObj)
         
@@ -36,7 +36,7 @@ const functions = {
         
         return res.status(200).json({"error":false,
          "accountTokenBalance": balance,
-         "total miners": invitedUsers.length,
+         "total invited miners": invitedUsers.length,
          "active miners":activeMinersCount,
          "invited users": invitedUsers
          
