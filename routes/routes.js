@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import auth from '../controllers/auth.js'
 import functions from '../controllers/functions.js'
-import { services } from '../services/services.js'
+import services  from '../services/services.js'
 
 const router = Router()
 
@@ -15,7 +15,7 @@ router.get('/api/:uid/inviteuser',auth.sessionAuth, functions.inviteUser)
 
 router.get('/api/:uid/getEmailOTP/',auth.sessionAuth,services.sendOTP)
 
-router.post('.api/:uid/verifyEmailOTP',auth.sessionAuth,services.verifyOTP)
+router.post('/api/:uid/verifyEmailOTP',auth.sessionAuth,services.verifyOTP)
 
 
 

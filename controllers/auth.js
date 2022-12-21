@@ -8,7 +8,6 @@ dotenv.config()
 
 const { sign, verify, JsonWebTokenError } = pkg
 const SECRET_KEY = process.env.SECRET_KEY
-var payload
 
 //provides auth functions
 const auth ={
@@ -24,12 +23,12 @@ const auth ={
         user = await User.findOne({email})
     }
     else{
-        return res.json({"error":"enter email or password"})
+        return res.json({"error":true,"error-message":"enter email or password"})
     }
     
     if(!user){
         //include custom error handling
-        return res.json({"error":"unregistered user"})
+        return res.json({"error":true,"error-message":"unregistered user"})
     }
 
     const hashed = user.password
@@ -52,10 +51,10 @@ const auth ={
     })
     
    
-    return res.json({"userid": userId,"login_success":"true"})
+    return res.json({"error":false,"user": user})
     }
     else{
-        res.send('invalid password')
+        res.json({"error":true,"error-message":"invalid password"})
     }
 }, 
 signup: async (req,res)=>{
@@ -67,17 +66,17 @@ signup: async (req,res)=>{
     const usernameTakenBool = await User.findOne({username})
 
     if(!username || !pass || !email || !referredBy || !country ||!fullname){
-        return res.json({"error":'please enter all credentials'})
+        return res.json({"error":true,"error":'please enter all credentials'})
     }  
 
     if(emailRegisteredBool){
-       return res.json({"error":'email already registered'})
+       return res.json({"error":true,"error":'email already registered'})
     }
     if(usernameTakenBool){
-        return res.json({"error":"username already taken"})
+        return res.json({"error":true,"error":"username already taken"})
     }
 
-    
+    n
     
     
     const walletObject = await ethersFunctions.createWallet()
@@ -111,8 +110,11 @@ signup: async (req,res)=>{
     //generate token to keep user signed in
     const token = await sign({userId},privateKey,{expiresIn: '1h'})
     //update user session token
-    await User.findOneAndUpdate({username:username},{sessionToken: token}).exec()
-    res.json({"user": user,"signup_success":"true"})
+    User.findOneAndUpdate({username:username},{sessionToken: token},(err,res)=>{
+        if(err) console.log(err)
+        console.log(res)
+    })
+    res.json({"error":false,"user": user,})
     }
     catch(error){
         console.log(error)
@@ -133,7 +135,7 @@ sessionAuth: async (req,res,next)=>{
         if (e instanceof JsonWebTokenError){
             console.log(e)
             return res.status(400)
-            .json({"loggedIn": false})
+            .json({"error":true,"loggedIn": false})
         }
     }
     

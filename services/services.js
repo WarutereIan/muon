@@ -1,26 +1,39 @@
 import * as nodemailer from 'nodemailer'
 import * as dotenv from 'dotenv'
-import User from '../models/User'
-import { authenticator, totp } from 'otplib'
+import User from '../models/User.js'
+import OTP from 'automatic-otp'
+import auth from '../controllers/auth.js'
 dotenv.config()
 
-const PASS = process.env.PASS
-const USER = process.env.USER
+const otp = new OTP() 
 
-const secret = authenticator.generateSecret()
 
-export const services = {
+
+const secret = 'EBSDMIALAALRA2LP'
+let validity,token
+
+
+const services = {
      sendOTP:  async (req, res)=>{
         const {uid} = req.params
-        const user = await User.findOne({uid},{email:1})
+
+        const user = await User.findOne({_id:uid},{email:1, verified:1})
+        
+        if(user.verified){
+            return res.json({"error":true,"error-message":"Email already verified"})
+        }
         const email = user.email
-        const token = totp.generate(secret)
+        const otpObject = otp.generate(6,{alphabet:false,specialCharacters:false})
+        token =  otpObject.token
+        console.log(`OTP generated:${token}`)
+    
+        console.log(typeof token)
 
         const transporter = nodemailer.createTransport({
         service: 'hotmail',
         auth: {
-                user: USER,
-                pass: PASS
+                user: "nmwanik111@gmail.com",
+                pass: "Kaminukia1@"
             }
         })
     const options = {
@@ -31,24 +44,37 @@ export const services = {
     }
 
     transporter.sendMail(options, (error,info)=>{
-        if(error) console.log(error)
-        else console.log(info)
+        if(error) {console.log(error)
+        res.send("error. contact systems admin")}
+        else {
+            console.log(info)
         res.send('Verification email sent')
-        })
+        }})
 
     
     }
 ,
 
     verifyOTP:async (req, res)=>{
-        const {verificationCode} = req.params
-        try{
-            const isValid = totp.verify({verificationCode,secret})
-            const {uid} = req.params
-            const user = await User.findOneAndUpdate({_id:uid},{verified: true})
-            console.log(user)
-            if(isValid){
-                res.send("Verification successful")
+        const {verificationCode} = req.body
+        const {uid} = req.params
+
+        if(!verificationCode){
+            return res.json({"error":true,"error-message":'enter verificationCode'})
+        }
+        try{     
+        
+            if(verificationCode == token){
+                User.findOneAndUpdate({_id:uid},{verified: true},(err,res)=>{
+                    if(err){
+                        console.log(err)
+                    }
+                    console.log(res)
+                })
+                res.json({"error":"false", user: res})
+            }
+            else{
+                res.json({"error":true,"error-message":"Invalid verification code. Please try again"})
             }
             
         }
@@ -58,10 +84,4 @@ export const services = {
     }
 }
 
-
-
-
-
-
-
-
+export default services
