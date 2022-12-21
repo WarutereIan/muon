@@ -23,7 +23,7 @@ const UserSchema = new Schema({
     
     sessionToken:{type: String},
     
-    usersReferred:[],
+    usersReferred:[{type: String}],
     
     email:{
         type: String,
@@ -47,6 +47,10 @@ const UserSchema = new Schema({
     },
     sessionToken: {
         type: String
+    },
+    miningStatus:{
+        type:Boolean,
+        default: false
     }
 
 

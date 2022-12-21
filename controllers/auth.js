@@ -128,7 +128,6 @@ signup: async (req,res)=>{
 sessionAuth: async (req,res,next)=>{
     const {uid} =  req.params
     const user = await User.findOne({_id:uid},{sessionToken:1})
-    console.log(user)
     const token = user.sessionToken
     
     
