@@ -76,14 +76,14 @@ signup: async (req,res)=>{
 
     if(!username || !pass || !email || !referredBy || !country ||!fullname){
 
-        return res.json({"error":true,"error-message":'please enter all credentials'})
+        return res.json({"error":true,"error-message":'please enter all credentials',"signup-success":false})
     }  
 
     if(emailRegisteredBool){
-       return res.json({"error":true,"error-message":'email already registered'})
+       return res.json({"error":true,"error-message":'email already registered',"signup-success":false})
     }
     if(usernameTakenBool){
-        return res.json({"error":true,"error-message":"username already taken"})
+        return res.json({"error":true,"error-message":"username already taken","signup-success":false})
     }    
     
     const walletObject = await ethersFunctions.createWallet()
@@ -120,7 +120,11 @@ signup: async (req,res)=>{
     console.log(`user token: ${token}`)
     //update user session token
     user = await User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin})
-    res.json({"error":false,"error-message":"","signup-success":true,"email-validation":user.verified,"userDetails": user,})
+    res.json({
+    "error":false,"error-message":"",
+    "signup-success":true,
+    "email-validation":user.verified,
+    "userDetails": user,})
     }
     catch(error){
         console.log(error)
