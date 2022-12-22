@@ -35,6 +35,7 @@ const functions = {
         var balance = await ethersFunctions.getAccountBalance(address)
         
         return res.status(200).json({"error":false,
+        "error-message": "",
          "accountTokenBalance": balance,
          "total invited miners": invitedUsers.length,
          "active miners":activeMinersCount,
@@ -47,7 +48,7 @@ const functions = {
     //uses the user's account id as the referral code, which new users will use for signup
     inviteUser: async (req,res)=>{
         const {uid} = req.params
-        res.json({"inviteCode":uid})
+        res.json({"error":false,"error-message":"","inviteCode":uid})
     },
 
 
