@@ -17,6 +17,8 @@ router.get('/api/:uid/getEmailOTP/',auth.sessionAuth,services.sendOTP)
 
 router.post('/api/:uid/verifyEmailOTP',auth.sessionAuth,services.verifyOTP)
 
+router.get('/api/signup/:uid/first-time-verification/:token',services.emailLinkVerification)
+
 
 
 export default router

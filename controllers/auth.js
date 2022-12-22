@@ -4,6 +4,7 @@ import User from '../models/User.js'
 import Wallet from '../models/Wallet.js'
 import ethersFunctions from '../config/ethersConfig.js'
 import * as dotenv from 'dotenv'
+import services from '../services/services.js'
 dotenv.config()
 
 const { sign, verify, JsonWebTokenError } = pkg
@@ -52,10 +53,10 @@ const auth ={
     })
     
    
-    return res.json({"error":false,"userDetails": user})
+    return res.json({"error":false,"login-success":true,"userDetails": user})
     }
     else{
-        res.json({"error":true,"error-message":"invalid password"})
+        res.json({"error":true,"login-success":false,"error-message":"invalid password"})
     }
 }, 
 signup: async (req,res)=>{
@@ -67,14 +68,15 @@ signup: async (req,res)=>{
     const usernameTakenBool = await User.findOne({username})
 
     if(!username || !pass || !email || !referredBy || !country ||!fullname){
-        return res.json({"error":true,"error":'please enter all credentials'})
+        
+        return res.json({"error":true,"error-message":'please enter all credentials'})
     }  
 
     if(emailRegisteredBool){
-       return res.json({"error":true,"error":'email already registered'})
+       return res.json({"error":true,"error-message":'email already registered'})
     }
     if(usernameTakenBool){
-        return res.json({"error":true,"error":"username already taken"})
+        return res.json({"error":true,"error-message":"username already taken"})
     }    
     
     const walletObject = await ethersFunctions.createWallet()
@@ -88,7 +90,7 @@ signup: async (req,res)=>{
     const password = await hash(pass,10) 
     const lastlogin = new Date()
     //create user document
-    const user = await newUser(username,password,email,referredBy,country,lastlogin, fullname)
+    let user = await newUser(username,password,email,referredBy,country,lastlogin, fullname)
 
     
     const dirtyuserId =  JSON.stringify(user._id)
@@ -105,18 +107,13 @@ signup: async (req,res)=>{
         User.findOneAndUpdate({_id: referredBy}, {$push:{usersReferred:userId}}).exec()
      }
     
+    await services.firstTimeSignup(user,req,res)
     //generate token to keep user signed in
     const token = await sign({userId},SECRET_KEY,{expiresIn: '1h'})
     console.log(`user token: ${token}`)
     //update user session token
-    User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin}, (err,res)=>{
-        if(err){
-            console.log(err)
-        }
-
-        console.log('token updated succesfully')
-    })
-    res.json({"error":false,"userDetails": user,})
+    user = await User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin})
+    res.json({"error":false,"signup-success":true,"signup-validation":user.verified,"userDetails": user,})
     }
     catch(error){
         console.log(error)

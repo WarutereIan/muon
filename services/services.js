@@ -6,11 +6,11 @@ import auth from '../controllers/auth.js'
 dotenv.config()
 
 const otp = new OTP() 
-
+const otpObject = otp.generate(6,{alphabet:false,specialCharacters:false})
 
 
 const secret = 'EBSDMIALAALRA2LP'
-let validity,token
+let token
 
 
 const services = {
@@ -24,7 +24,7 @@ const services = {
             return res.json({"error":true,"error-message":"Email already verified"})
         }
         const email = user.email
-        const otpObject = otp.generate(6,{alphabet:false,specialCharacters:false})
+        
         token =  otpObject.token
         console.log(`OTP generated:${token}`)
     
@@ -49,7 +49,7 @@ const services = {
         res.json({"error":true,"error-message":"error. contact systems admin"})}
         else {
             console.log(info)
-        res.send('Verification email sent')
+        res.json({"error":false, "error-message":'Verification email sent'})
         }})
 
     
@@ -71,6 +71,60 @@ const services = {
             }
             else{
                 res.json({"error":true,"error-message":"Invalid verification code. Please try again"})
+            }
+            
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
+    firstTimeSignup: async (user,req,res)=>{
+        
+        const uid = user._id
+        const email = user.email
+        if(user.verified){
+            return res.json({"error":true,"error-message":"Email already verified"})
+        }
+
+        token =  otpObject.token
+
+        const transporter = nodemailer.createTransport({
+        service: 'hotmail',
+        auth: {
+                user: "nmwanik111@gmail.com",
+                pass: "Kaminukia1@"
+            }
+        })
+    const options = {
+    from: 'nmwanik111@gmail.com',
+    to: email,
+    subject: 'AxtrumPay verification',
+    text: `Click on the link below to verify your email:
+        http://20.29.125.247:80/api/signup/${uid}/first-time-verification/${token}`
+    }
+    
+    transporter.sendMail(options, (error,info)=>{
+        if(error) {
+            console.log(`error sending message: ${error}`)
+        }
+        else {
+            console.log(`verification email sent with below details: 
+                        ${info}`)
+        }})
+   
+    },
+    emailLinkVerification: async (req,res)=>{
+        const {uid,token} = req.params
+        
+        try{     
+        
+            if(token == otpObject.token){
+                const user = await User.findOneAndUpdate({_id:uid},{verified: true})
+                
+                return res.send('Email verified successfully')
+            }
+            else{
+                res.send('Error verifying email: Code timed out. Please try again')
             }
             
         }
