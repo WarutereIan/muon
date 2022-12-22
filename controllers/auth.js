@@ -24,13 +24,16 @@ const auth ={
     else if(email){
         user = await User.findOne({email})
     }
+    else if(!pass){
+            return res.json({"error":true,"error-message":"password cannot be blank","login-success":false})
+    }
     else{
-        return res.json({"error":true,"error-message":"enter email or password"})
+        return res.json({"error":true,"error-message":"Please provide a username or email", "login-success":false})
     }
     
     if(!user){
         //include custom error handling
-        return res.json({"error":true,"error-message":"unregistered user"})
+        return res.json({"error":true,"error-message":"username or email incorrect","login-success":false})
     }
 
     const hashed = user.password
@@ -56,7 +59,11 @@ const auth ={
     return res.json({"error":false,"error-message":"","login-success":true,"userDetails": user})
     }
     else{
-        res.json({"error":true,"login-success":false,"error-message":"invalid password"})
+        res.json({"error":true,
+        "error-message":"invalid password",
+        "login-success":false,        
+        "username":user.username,
+        "email":user.email})
     }
 }, 
 signup: async (req,res)=>{
@@ -113,7 +120,7 @@ signup: async (req,res)=>{
     console.log(`user token: ${token}`)
     //update user session token
     user = await User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin})
-    res.json({"error":false,"error-message":"","signup-success":true,"signup-validation":user.verified,"userDetails": user,})
+    res.json({"error":false,"error-message":"","signup-success":true,"email-validation":user.verified,"userDetails": user,})
     }
     catch(error){
         console.log(error)
