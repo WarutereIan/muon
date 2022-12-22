@@ -53,7 +53,7 @@ const auth ={
     })
     
    
-    return res.json({"error":false,"login-success":true,"userDetails": user})
+    return res.json({"error":false,"error-message":"","login-success":true,"userDetails": user})
     }
     else{
         res.json({"error":true,"login-success":false,"error-message":"invalid password"})
@@ -68,7 +68,7 @@ signup: async (req,res)=>{
     const usernameTakenBool = await User.findOne({username})
 
     if(!username || !pass || !email || !referredBy || !country ||!fullname){
-        
+
         return res.json({"error":true,"error-message":'please enter all credentials'})
     }  
 
@@ -113,7 +113,7 @@ signup: async (req,res)=>{
     console.log(`user token: ${token}`)
     //update user session token
     user = await User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin})
-    res.json({"error":false,"signup-success":true,"signup-validation":user.verified,"userDetails": user,})
+    res.json({"error":false,"error-message":"","signup-success":true,"signup-validation":user.verified,"userDetails": user,})
     }
     catch(error){
         console.log(error)
@@ -135,7 +135,7 @@ sessionAuth: async (req,res,next)=>{
         if (e instanceof JsonWebTokenError){
             console.log(e)
             return res.status(400)
-            .json({"error":true,"errorMessage":"User session timed out"})
+            .json({"error":true,"error-message":"User session timed out"})
         }
     }
     

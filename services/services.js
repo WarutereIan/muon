@@ -33,12 +33,12 @@ const services = {
         const transporter = nodemailer.createTransport({
         service: 'hotmail',
         auth: {
-                user: "nmwanik111@gmail.com",
-                pass: "Kaminukia1@"
+                user: "axtrumpay@outlook.com",
+                pass: "Admin_Dominic_98"
             }
         })
     const options = {
-    from: 'nmwanik111@gmail.com',
+    from: 'axtrumpay@outlook.com',
     to: email,
     subject: 'AxtrumPay OTP verification',
     text: `Your One-Time verification Code is: ${token}`
@@ -91,12 +91,12 @@ const services = {
         const transporter = nodemailer.createTransport({
         service: 'hotmail',
         auth: {
-                user: "nmwanik111@gmail.com",
-                pass: "Kaminukia1@"
+            user: "axtrumpay@outlook.com",
+            pass: "Admin_Dominic_98"
             }
         })
     const options = {
-    from: 'nmwanik111@gmail.com',
+    from: 'axtrumpay@outlook.com',
     to: email,
     subject: 'AxtrumPay verification',
     text: `Click on the link below to verify your email:
