@@ -7,19 +7,22 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import * as nodeCron from 'node-cron'
+//i and j prevent cron jobs from running before an hour fully elapses when server is restarted
+//var i = 0
 
+    //payout every hour
     const jobPayWalletsHourly = nodeCron.schedule(
         "59 59 * * * *",()=>{
-            getPayableWallets()
-        }
-    )
+            
+            getPayableWallets()})
     
+            //check for inactive users every 20 min and deactivate
     const jobResetInactiveMiningSessions = nodeCron.schedule(
-        "59 59 * * * *",()=>{
+        "59 20 * * * *",()=>{
+            
             functions.checkMiningSessionTimeout()
-        }
+        })
         
-    )
 
 
 const MONGO_URI = process.env.MONGO_URI

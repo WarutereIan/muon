@@ -52,29 +52,45 @@ const functions = {
     },
     //start mining session button
     startMiningSession: async (req,res)=>{
-        const {userId} = req.params 
+        const {uid} = req.params 
         const currentTime = new Date()
+        const timeString = JSON.stringify(currentTime)
+        var user = await User.findById(uid)
 
-        User.findOneAndUpdate({_id:userId},{miningStatus: true, lastlogin: currentTime }, (err,res)=>{
-            if(err){
-                console.log(err)
-            }
+        
+        if(user.miningStatus){
+            return res.json({
+                "error":true,
+                "error-message":"Mining session already started",
+                "userDetails": user
+            })
+        }
 
-            console.log('mining session started')
+        user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime })
+
+        console.log('mining session started')
 
             res.json({"error":false,
              "error-message":"",
             "started-session":true,
-            "time-started": currentTime})  
-        })
+            "started-at":currentTime,
+            "userDetails":user
+            }) 
     },
     //check if miner active, if not set miningStatus to false
     checkMiningSessionTimeout: async (req,res)=>{
-        for await (const user of User.find({verified: true, miningStatus: true},{lastlogin: 1})){
+        console.log(`checkMiningSessionTimeout script running`)
+        for await (const user of User.find({verified: true, miningStatus: true},{username:1,lastlogin: 1})){
+            
             const currentTime = new Date()
             const differenceInh = (currentTime - user.lastlogin)/(60*60*1000)
-            if(differenceInh>1 ){
-                await User.findOneAndUpdate({_id:user._id},{miningStatus:false})
+            
+
+            const id = JSON.stringify(user._id)
+            const userId = id.replace(/([^a-z0-9]+)/gi, '')
+            
+            if(differenceInh >= 1 ){
+                await User.findOneAndUpdate({_id:userId},{miningStatus:false})
                 console.log(`
                 user: ${user.username}, id: ${user._id} mining session timed out
                 `)
