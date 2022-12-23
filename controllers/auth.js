@@ -146,7 +146,7 @@ sessionAuth: async (req,res,next)=>{
         if (e instanceof JsonWebTokenError){
             console.log(e)
             return res.status(400)
-            .json({"error":true,"error-message":"User session timed out"})
+            .json({"error":true,"error-message":"User online session timed out. Please login again"})
         }
     }
     

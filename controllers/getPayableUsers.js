@@ -40,13 +40,13 @@ connect(MONGO_URI,
     const id = JSON.stringify(user._id)
     const userId = id.replace(/([^a-z0-9]+)/gi, '')
 
-    /*differenceInh gives the period after which users logins are to be checked*/
+    /*differenceInh gives the period after which users logins are to be checked. No longer relevant in new iteration*/
    const lastloginInstance = user.lastlogin
    const timeNow = new Date()
     const difference = timeNow - lastloginInstance
     const differenceInh = difference/(60*60*1000)    
 
-    if(differenceInh < 24){
+    if(differenceInh < 1){
 
         for await(const referredMiner of User.find({_id: user.usersReferred[i]})){
             if(referredMiner.miningStatus){
@@ -64,6 +64,8 @@ connect(MONGO_URI,
     ++j
     if(i==j){
     }
+    console.log(`payable users are as below:
+    `)
     console.log(usersArray)
     }
 catch(e){

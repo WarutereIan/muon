@@ -8,18 +8,18 @@ dotenv.config()
 
 import * as nodeCron from 'node-cron'
 
-const jobPayWalletsHourly = nodeCron.schedule(
-    "59 59 * * * *",()=>{
-        getPayableWallets()
-    }
-)
-
-const jobResetInactiveMiningSessions = nodeCron.schedule(
-    "59 59 * * * *",()=>{
-        functions.checkMiningSessionTimeout()
-    }
+    const jobPayWalletsHourly = nodeCron.schedule(
+        "59 59 * * * *",()=>{
+            getPayableWallets()
+        }
+    )
     
-)
+    const jobResetInactiveMiningSessions = nodeCron.schedule(
+        "59 59 * * * *",()=>{
+            functions.checkMiningSessionTimeout()
+        }
+        
+    )
 
 
 const MONGO_URI = process.env.MONGO_URI

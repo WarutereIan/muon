@@ -37,13 +37,14 @@ async function getPayableWallets(){
     
         amountsArray.push(amount)
         //send tokens from owner's wallet
-        const tx = await contract.transfer(addr,amount)
-        var receipt = tx.await
-        console.log(receipt)
+        await contract.transfer(addr,amount)
+        
 
 
     if(i == userids.length - 1){
+        console.log(`paid wallets are as below: `)
         console.log(walletsArray)
+        console.log(`corresponding paid amounts are:`)
         console.log(amountsArray)
         }
         
@@ -54,6 +55,6 @@ async function getPayableWallets(){
 }
 
 
- getPayableWallets()
+ 
 
 export default getPayableWallets
