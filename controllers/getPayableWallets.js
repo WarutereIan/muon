@@ -1,3 +1,5 @@
+//wallets are paid out in this module every hour
+
 import getUsers from "./getPayableUsers.js"
 import Wallet from '../models/Wallet.js'
 import { BigNumber, ethers } from 'ethers'
@@ -11,8 +13,8 @@ var uid
 var amountInt
 var amount
 
-var constRate = BigInt(1*10**17)
-var referralRateModifier = BigInt(1*10**16)
+var constRate = BigInt(1*10**18)
+var referralRateModifier = BigInt(5*10**17)
 
 /* returns arrays of: i: payable wallets, 
                       ii: corresponding amounts to be paid                    
@@ -30,13 +32,16 @@ async function getPayableWallets(){
         walletsArray.push(wallet.address)
         var addr = wallet.address
         amountInt = constRate+(userObj["referrals"]*referralRateModifier)
-        console.log(typeof amountInt)
+        
         amount = BigInt(amountInt)
-        console.log(amount)
+    
         amountsArray.push(amount)
         //send tokens from owner's wallet
-        await contract.transfer(addr,amount)
-        
+        const tx = await contract.transfer(addr,amount)
+        var receipt = tx.await
+        console.log(receipt)
+
+
     if(i == userids.length - 1){
         console.log(walletsArray)
         console.log(amountsArray)
@@ -51,3 +56,4 @@ async function getPayableWallets(){
 
  getPayableWallets()
 
+export default getPayableWallets

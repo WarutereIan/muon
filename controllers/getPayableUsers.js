@@ -1,3 +1,4 @@
+//list of active miners and their referred active miners is populated in this module
 
 import User from '../models/User.js'
 import Wallet from '../models/Wallet.js'
@@ -16,7 +17,7 @@ const usersArray = []
 
 const MONGO_URI = process.env.MONGO_URI
 
-var i = 0, j = 0
+var i = 0, j = 0,activeReferralCount = 0
 
 connect(MONGO_URI,
     (err)=>{
@@ -30,7 +31,7 @@ connect(MONGO_URI,
   async function getUsers (){
 
     try{
-    for await (const user of User.find({verified: true},{
+    for await (const user of User.find({verified: true, miningStatus: true},{
         password: 0,
         wallet: 0,
         sessionToken: 0
@@ -46,7 +47,15 @@ connect(MONGO_URI,
     const differenceInh = difference/(60*60*1000)    
 
     if(differenceInh < 24){
-         usersArray.push({"userId":userId,"referrals":BigInt(user.usersReferred.length)})
+
+        for await(const referredMiner of User.find({_id: user.usersReferred[i]})){
+            if(referredMiner.miningStatus){
+                activeReferralCount++
+            }
+        }   
+
+         usersArray.push({"userId":userId,"referrals":BigInt(activeReferralCount)})
+         activeReferralCount = 0
         } 
     }
     /*this section below somehow makes the try-catch block
@@ -55,6 +64,7 @@ connect(MONGO_URI,
     ++j
     if(i==j){
     }
+    console.log(usersArray)
     }
 catch(e){
     console.log(e)

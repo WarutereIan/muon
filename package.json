@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/WarutereIan/muon#readme",
   "dependencies": {
-    
     "automatic-otp": "^1.0.4",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",

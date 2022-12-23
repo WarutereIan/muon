@@ -47,7 +47,7 @@ const auth ={
     if(rightPassword){
     const token = sign({userId},SECRET_KEY,{expiresIn: '1h'}) 
     //update user session token
-    User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin}, (err,res)=>{
+    User.findOneAndUpdate({_id:userId},{sessionToken: token,lastlogin: lastlogin, }, (err,res)=>{
         if(err){
             console.log(err)
         }

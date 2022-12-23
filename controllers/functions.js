@@ -37,9 +37,9 @@ const functions = {
         return res.status(200).json({"error":false,
         "error-message": "",
          "accountTokenBalance": balance,
-         "total invited miners": invitedUsers.length,
-         "active miners":activeMinersCount,
-         "invited users": invitedUsers
+         "total-invited-miners": invitedUsers.length,
+         "active-miners":activeMinersCount,
+         "invited-users": invitedUsers
          
          
          })
@@ -50,6 +50,40 @@ const functions = {
         const {uid} = req.params
         res.json({"error":false,"error-message":"","inviteCode":uid})
     },
+    //start mining session button
+    startMiningSession: async (req,res)=>{
+        const {userId} = req.params 
+        const currentTime = new Date()
+
+        User.findOneAndUpdate({_id:userId},{miningStatus: true, lastlogin: currentTime }, (err,res)=>{
+            if(err){
+                console.log(err)
+            }
+
+            console.log('mining session started')
+
+            res.json({"error":false,
+             "error-message":"",
+            "started-session":true,
+            "time-started": currentTime})  
+        })
+    },
+    //check if miner active, if not set miningStatus to false
+    checkMiningSessionTimeout: async (req,res)=>{
+        for await (const user of User.find({verified: true, miningStatus: true},{lastlogin: 1})){
+            const currentTime = new Date()
+            const differenceInh = (currentTime - user.lastlogin)/(60*60*1000)
+            if(differenceInh>1 ){
+                await User.findOneAndUpdate({_id:user._id},{miningStatus:false})
+                console.log(`
+                user: ${user.username}, id: ${user._id} mining session timed out
+                `)
+            }
+        }
+    }
+    
+    
+    
 
 
 
