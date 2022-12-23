@@ -9,6 +9,8 @@ router.post('/api/login', auth.login)
 
 router.post('/api/signup', auth.signup)
 
+router.post('/api/:uid/changePassword',auth.sessionAuth,auth.resetPassword)
+
 router.get('/api/:uid/viewbalance', auth.sessionAuth, functions.viewBalance)
 
 router.get('/api/:uid/inviteuser',auth.sessionAuth, functions.inviteUser)

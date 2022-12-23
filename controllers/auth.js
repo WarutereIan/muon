@@ -132,6 +132,41 @@ signup: async (req,res)=>{
     }
 
 },
+
+resetPassword: async (req,res)=>{
+    const {uid} = req.params
+    const {oldPassword,newPassword,newPasswordConfirmation} = req.body
+
+    if(newPassword !== newPasswordConfirmation){
+        return res.json({
+            "error":true,
+            "error-message":"Provided new passwords do not match",
+            "password-change-success":false
+        })
+    }
+
+    else if(oldPassword==newPassword || oldPassword==newPasswordConfirmation){
+        return res.json({
+            "error":true,
+            "error-message":"New password cannot be old password",
+            "password-change-success":false
+        })
+    }
+
+    else{
+        var passwordReplacement = await hash(newPassword,10)
+        const user = await User.findByIdAndUpdate({_id:uid},{password: passwordReplacement})
+
+        return res.json({
+            "error": false,
+            "error-message":"",
+            "password-change-success": true,
+            "user-details": user
+
+        })
+    }
+}, 
+
 //verify that session is still on
 sessionAuth: async (req,res,next)=>{
     const {uid} =  req.params
