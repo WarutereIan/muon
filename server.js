@@ -2,10 +2,13 @@ import app from "./express-app.js";
 import { Server} from "socket.io";
 import {createServer} from 'http'
 import socketFunction from "./sockets/socketFunction.js";
+import { getLastAnnouncement } from "./sockets/getLatestAnnouncement.js";
 
 const httpServer = createServer(app)
 
 const io = new Server(httpServer)
+
+const lastAnnouncement = getLastAnnouncement()
 
 var uidSocketPair = {}
 
@@ -14,8 +17,8 @@ io.on('connection',(socket,uid,uidSocketPair)=>{
     uidSocketPair[uid] = socket.id 
     
 
-    //send announcement upon connection: maintain a log
-    socket.broadcast.emit(msg)
+    //send announcement upon connection: maintain a log. Announcements maintained in db
+    socket.broadcast.emit(lastAnnouncement)
 
     socket.on('startMining',socketFunction.startMining(socket,uid))
 

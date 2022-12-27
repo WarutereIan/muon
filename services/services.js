@@ -2,7 +2,7 @@ import * as nodemailer from 'nodemailer'
 import * as dotenv from 'dotenv'
 import User from '../models/User.js'
 import OTP from 'automatic-otp'
-import auth from '../controllers/auth.js'
+// import auth from '../controllers/auth.js'
 dotenv.config()
 
 const otp = new OTP() 

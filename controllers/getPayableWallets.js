@@ -2,8 +2,9 @@
 
 import getUsers from "./getPayableUsers.js"
 import Wallet from '../models/Wallet.js'
-import { BigNumber, ethers } from 'ethers'
-import { contract, OwnerWallet,provider } from '../config/ethersConfig.js'
+//import { BigNumber, ethers } from 'ethers'
+import { contract } from '../config/ethersConfig.js'
+import Rates from "../admin/models/miningRates.js"
 
 var userids = []
 var amountsArray = []
@@ -13,13 +14,15 @@ var uid
 var amountInt
 var amount
 
-var constRate = BigInt(1*10**18)
-var referralRateModifier = BigInt(5*10**17)
-
 /* returns arrays of: i: payable wallets, 
                       ii: corresponding amounts to be paid                    
 */ 
 async function getPayableWallets(){
+    const rates = await Rates.findOne()
+
+    const constRate = rates._constRate
+    const referralRateModifier = rates._referralRateModifier
+
     const arr = await Promise.all([getUsers()])   
     userids = arr[0]
     var i = 0

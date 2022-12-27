@@ -2,7 +2,7 @@ import pkg from 'jsonwebtoken'
 import { compare, hash } from 'bcrypt' 
 import Admin from '../models/Admin.js'
 import * as dotenv from 'dotenv'
-import services from '../services/services.js'
+import services from '../../services/services.js'
 dotenv.config()
 
 const { sign, verify, JsonWebTokenError } = pkg

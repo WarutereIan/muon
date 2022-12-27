@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema,model } from "mongoose";
 import validator from "validator";
 const {isEmail} = validator
 
@@ -22,7 +22,7 @@ const AdminSchema = new Schema({
         validate: isEmail
     },
     lastlogin: {
-        type: Date()
+        type: Date
     },
     sessionToken:{
         type: String
