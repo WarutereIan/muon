@@ -34,7 +34,8 @@ async function getPayableWallets(){
     if(wallet){
         walletsArray.push(wallet.address)
         var addr = wallet.address
-        amountInt = constRate+(userObj["referrals"]*referralRateModifier)
+        var BigIntReferrals = BigInt(userObj["referrals"])
+        amountInt = constRate+(BigIntReferrals*referralRateModifier)
         
         amount = BigInt(amountInt)
     
