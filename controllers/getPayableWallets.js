@@ -54,7 +54,11 @@ async function getPayableWallets(){
         
     }  
     i++ 
-    }    
+    }
+    
+    //clear arrays after use
+    walletsArray.length = 0
+    amountsArray.length = 0
     
 }
 
