@@ -24,16 +24,16 @@ async function genesisCreator(){
     const rates = await Rates.create({_constRate,_referralRateModifier})
 
     const timeNow = new Date()
-    const announcement = [{timeNow:"welcome to AxtrumPay!"}]
+    const announcements = [`welcome to AxtrumPay!. created at ${timeNow}`]
     
 
-    const announcementDoc = await Announcement.create(announcement)
+    const announcementDoc = await Announcement.create({announcements})
 
     console.log(`genesis rates document:
 ${rates}
 `)
 
-    console.log(`announcements document: ${announcementDoc[0]}`)}
+    console.log(`announcements document: ${announcementDoc.announcements}`)}
     catch(e){
         console.error(e)
     }

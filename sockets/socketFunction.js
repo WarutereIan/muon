@@ -1,12 +1,18 @@
-const socketFunction = {
-    balance: async (socket,uid)=>{
+import User from "../models/User.js"
+import Wallet from "../models/Wallet.js"
+import ethersFunctions from "../config/ethersConfig.js"
 
-        const userSocketId = socket.id
+const socketFunction = {
+    balance: async (socketObj,uid)=>{
+
+        const userSocketId = socketObj.id
         let invitedUsers = []
         let invitee
         let activeMinersCount = 0
-        const wallet = await Wallet.findOne({userId:uid},{address: 1})
-        const address = wallet.address
+        const wallet = await Wallet.find({userId:uid},{address: 1})
+        let address = wallet[0].address
+        
+        var balance = await ethersFunctions.getAccountBalance(address)
         var user = await User.findOne({_id:uid},{usersReferred: 1})
         var invitedObj = user.usersReferred
         var usersArray = Object.values(invitedObj)
@@ -26,13 +32,13 @@ const socketFunction = {
             }
         }
 
-        var balance = await ethersFunctions.getAccountBalance(address)
+        
 
-        io.sockets.socket(userSocketId).emit(
+        socketObj.emit('data-api',
             {
         "error":false,
         "error-message": "",
-        "mining-session-started-at":"",
+        "mining-session-started-at":user.lastMiningStartedAt,
          "accountTokenBalance": balance,
          "total-invited-miners": invitedUsers.length,
          "active-miners":activeMinersCount,
@@ -43,40 +49,41 @@ const socketFunction = {
 
 
     },
-    startMining: async (socket,uid)=>{
-        const userSocketId = socket.id
+    startMining: async (socketObj,uid)=>{
+        const userSocketId = socketObj.id
         const currentTime = new Date()
         // const timeString = JSON.stringify(currentTime)
         var user = await User.findById(uid)
 
         
         if(user.miningStatus){
-            return io.sockets.socket(userSocketId).emit({
+            return socketObj.emit('mining-status',{
                 "error":true,
                 "error-message":"Mining session already started",
+                "mining-started-at": user.lastMiningStartedAt,
                 "userDetails": user
             })
         }
 
-        user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime })
+        user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime, lastMiningStartedAt:currentTime })
 
         console.log('mining session started')
 
-        io.sockets.socket(userSocketId).emit({"error":false,
+        socketObj.emit('mining-status',{"error":false,
              "error-message":"",
             "started-session":true,
             "started-at":currentTime,
             "userDetails":user
             }) 
     },
-    pingInactiveMiners: async (socket,uid,uidSocketPair)=>{
+    pingInactiveMiners: async (socketObj,uid,uidSocketPair)=>{
         const user = await User.findOne({_id:uid},{usersReferred:1})
         var i = 0
 
         for await(const referredMiner of User.find({_id: user.usersReferred[i]})){
             if(!referredMiner.miningStatus){
                 var socketId = uidSocketPair[uid]
-                io.sockets.socket(socketId).emit({
+                socketObj.to(socketId).emit('',{
                  "error":false,
                  "error-message": '',
                  "ping-message":`user ${user.username} sent you a ping!`    
@@ -84,7 +91,11 @@ const socketFunction = {
             i++    
             }
         }  
-        
+    socketObj.emit('pingInactiveMiners',{
+        "error":false,
+        "error-message": '',
+        "ping-status":"inactive online miners received ping"
+    })
     }
 }
 

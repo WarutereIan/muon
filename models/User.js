@@ -51,6 +51,9 @@ const UserSchema = new Schema({
     miningStatus:{
         type:Boolean,
         default: false
+    },
+    lastMiningStartedAt:{
+        type: Date
     }
 
 

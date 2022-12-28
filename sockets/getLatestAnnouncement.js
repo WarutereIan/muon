@@ -5,6 +5,7 @@ export async function getLastAnnouncement () {
     
     const announcement = await Announcement.findOne()
 
+
     const announcementsArray = announcement.announcements
 
     const latestAnnouncement = announcementsArray[announcementsArray.length - 1]

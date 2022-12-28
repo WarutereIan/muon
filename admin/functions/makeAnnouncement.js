@@ -1,6 +1,6 @@
 import Announcement from "../models/announcement.js"
 
-var announcementsObject = {}
+var announcementsObject = []
 var announcementsArray = []
 
  async function makeAnnouncement (req,res){
@@ -13,19 +13,23 @@ makeAnnouncement called
 
     const timeOfAnnouncement = new Date()
 
-    announcementsObject[timeOfAnnouncement] = newAnnouncement
+    var oldAnnouncementsDoc = await Announcement.findOne()
+    
+    var oldAnnouncementsArr = oldAnnouncementsDoc.announcements
 
-    announcementsArray.push(announcementsObject)
+    var newAnnouncementInstance = `${newAnnouncement} created at ${timeOfAnnouncement}`
 
-    console.log(announcementsObject)
+    console.log(oldAnnouncementsArr)
 
-    var announcements = await Announcement.findOneAndReplace({},{announcements: announcementsObject},{new:true})
+    oldAnnouncementsArr.push(newAnnouncementInstance)
+
+    var updatedAnnouncements = await Announcement.findOneAndReplace({},{announcements: oldAnnouncementsArr},{new:true})
 
     res.json({
         "error": false,
         "error-message": "",
         "announcement-made-success": true,
-        "announcement-document": announcements
+        "announcement-made": updatedAnnouncements.announcements[oldAnnouncementsArr.length-1]
     })
 }
 catch(e){

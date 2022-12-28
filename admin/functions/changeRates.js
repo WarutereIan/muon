@@ -2,15 +2,16 @@ import Rates from '../models/miningRates.js'
 
 export async function RatesModifier(req,res){
     try{
-    const {constRate,referralRateModifier} = req.params
+    const {constRate,referralRateModifier} = req.body
 
-    const rates = await Rates.findOneAndUpdate({},{_constRate: constRate, _referralRateModifier: referralRateModifier},{new: true})
+    const rates = await Rates.findOneAndReplace({},{_constRate: constRate, _referralRateModifier: referralRateModifier},{new: true})
 
     return res.json({
         "error": false,
         "error-message": "",
         "changeMiningRatesSuccess":true,
-        "newMiningRates": {"constRate":rates._constRate, "referralRateModifier":rates._referralRateModifier}
+        "newConstRate": rates._constRate,
+        "newreferralRateModifier":rates._referralRateModifier 
 
     })
     
