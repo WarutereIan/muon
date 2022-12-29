@@ -6,12 +6,12 @@ import { RatesModifier } from '../functions/changeRates.js'
 
 const adminRoutes = new Router()
 
-adminRoutes.post(`/admin/api/login`,adminAuth.login)
+adminRoutes.post(`/api/admin/login`,adminAuth.login)
 
-adminRoutes.post(`/admin/admin/signup`,adminAuth.signup)
+adminRoutes.post(`/api/admin/signup`,adminAuth.signup)
 
-adminRoutes.post(`/admin/api/:uid/changeRate`,adminAuth.sessionAuth,RatesModifier)
+adminRoutes.post(`/api/admin/:uid/changeRate`,adminAuth.sessionAuth,RatesModifier)
 
-adminRoutes.post(`/admin/api/:uid/makeAnnouncement`,adminAuth.sessionAuth,makeAnnouncement)
+adminRoutes.post(`/api/admin/:uid/makeAnnouncement`,adminAuth.sessionAuth,makeAnnouncement)
 
 export default adminRoutes

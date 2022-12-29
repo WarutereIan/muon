@@ -1,5 +1,6 @@
 import express, { json, urlencoded } from 'express';
 import routes from './routes/routes.js';
+import adminRoutes from './admin/adminRoutes/adminRoutes.js';
 import { connect } from 'mongoose';
 import functions from './controllers/functions.js';
 import getPayableWallets from './controllers/getPayableWallets.js';
@@ -40,6 +41,7 @@ connect(MONGO_URI,
 app.use(json())
 app.use(urlencoded({extended:false}))
 app.use(routes)
+app.use(adminRoutes)
 
 
 
