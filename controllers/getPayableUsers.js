@@ -54,7 +54,7 @@ connect(MONGO_URI,
             }
         }   
 
-         usersArray.push({"userId":userId,"referrals":BigInt(activeReferralCount)})
+         usersArray.push({"userId":userId,"referrals":activeReferralCount})
          activeReferralCount = 0
         } 
     }

@@ -86,6 +86,12 @@ signup: async (req,res)=>{
         return res.json({"error":true,"error-message":"username already taken","signup-success":false})
     }    
     
+    const referrerValid = await User.findOne({referredBy})
+
+    if(!referrerValid){
+        return res.json({"error":true,"error-message":"referring user invalid or not existing. Please try again","signup-success":false})
+    }
+
     const walletObject = await ethersFunctions.createWallet()
     
     const   address= walletObject.address,
@@ -169,8 +175,13 @@ resetPassword: async (req,res)=>{
 
 //verify that session is still on
 sessionAuth: async (req,res,next)=>{
+    try{
     const {uid} =  req.params
     const user = await User.findOne({_id:uid},{sessionToken:1})
+    if(!user){
+        return res.status(400)
+        .json({"error":true,"error-message":"User not found"})
+    }
     const token = user.sessionToken
     
     
@@ -187,6 +198,10 @@ sessionAuth: async (req,res,next)=>{
     
         return    next()    
     }
+    catch(e){
+        console.log(e)
+    }
+}
     
 }
 

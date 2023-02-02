@@ -1,4 +1,4 @@
-//wallets are paid out in this module every hour
+//wallets are paid out in this module every hour as the module is called    q
 
 import getUsers from "./getPayableUsers.js"
 import Wallet from '../models/Wallet.js'
@@ -34,10 +34,10 @@ async function getPayableWallets(){
     if(wallet){
         walletsArray.push(wallet.address)
         var addr = wallet.address
-        var BigIntReferrals = BigInt(userObj["referrals"])
+        var BigIntReferrals = userObj["referrals"]
         amountInt = constRate+(BigIntReferrals*referralRateModifier)
         
-        amount = BigInt(amountInt)
+        amount = BigInt(amountInt*10**18)
     
         amountsArray.push(amount)
         //send tokens from owner's wallet

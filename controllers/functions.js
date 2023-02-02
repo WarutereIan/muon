@@ -79,7 +79,8 @@ const functions = {
     },
     //check if miner active, if not set miningStatus to false
     checkMiningSessionTimeout: async (req,res)=>{
-        console.log(`checkMiningSessionTimeout script running`)
+        const SessionCheckTime = new Date()
+        console.log(`checkMiningSessionTimeout script running at ${SessionCheckTime}`)
         for await (const user of User.find({verified: true, miningStatus: true},{username:1,lastlogin: 1})){
             
             const currentTime = new Date()
@@ -92,7 +93,7 @@ const functions = {
             if(differenceInh >= 1 ){
                 await User.findOneAndUpdate({_id:userId},{miningStatus:false})
                 console.log(`
-                user: ${user.username}, id: ${user._id} mining session timed out
+                user: ${user.username}, id: ${user._id} mining session timed out at ${currentTime}
                 `)
             }
         }
