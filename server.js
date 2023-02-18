@@ -58,6 +58,7 @@ socket connected: ${socket.id}`)
 
     //send announcement upon connection: maintain a log. Announcements maintained in db
     socket.on('initiate',(socket)=>{
+        console.log(socket)
         uid = socket.data[0].uid
         uidSocketPair[uid] = socketId 
         console.log(uidSocketPair)

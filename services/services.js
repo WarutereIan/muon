@@ -1,4 +1,3 @@
-import * as nodemailer from 'nodemailer'
 import * as dotenv from 'dotenv'
 import User from '../models/User.js'
 import OTP from 'automatic-otp'
@@ -9,7 +8,7 @@ const otp = new OTP()
 const otpObject = otp.generate(6,{alphabet:false,specialCharacters:false})
 
 
-const secret = 'EBSDMIALAALRA2LP'
+//const secret = 'EBSDMIALAALRA2LP'
 let token
 
 
