@@ -41,7 +41,7 @@ connect(MONGO_URI,
 app.use(json())
 app.use(urlencoded({extended:false}))
 app.use(routes)
-app.use(adminRoutes)
+
 
 
 
