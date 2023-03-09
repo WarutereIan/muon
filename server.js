@@ -63,10 +63,14 @@ socket connected: ${socket.id}`)
         uidSocketPair[uid] = socketId 
         console.log(uidSocketPair)
 
-        socketObj.emit('initiate-success','sockets api initiated successfully')
+        
+        
+        socketFunction.startMining(socketObj,uid)
+        bal()
+
     })   
 
-    socket.on('startMining',async function(){
+    /*socket.on('startMining',async function(){
         socketFunction.startMining(socketObj,uid)})
 
     socket.on('data-api',async ()=>{
@@ -74,7 +78,7 @@ socket connected: ${socket.id}`)
 data-api: uid = ${uid}`)
         
     bal()
-    })
+    })*/
 
     socket.on('pingInactiveMiners',async function(){socketFunction.pingInactiveMiners(socketObj,uid,uidSocketPair)})
 

@@ -34,7 +34,7 @@ const socketFunction = {
 
         
 
-        socketObj.emit('data-api',
+        socketObj.emit('initiate',
             {
         "error":false,
         "error-message": "",
