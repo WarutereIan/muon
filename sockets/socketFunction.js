@@ -35,7 +35,7 @@ const socketFunction = {
         
 
         socketObj.emit('initiate',
-            {
+            {"data_api":{
         "error":false,
         "error-message": "",
         "mining-session-started-at":user.lastMiningStartedAt,
@@ -44,7 +44,7 @@ const socketFunction = {
          "active-miners":activeMinersCount,
          "invited-users": invitedUsers
          
-            }
+            }}
         )
 
 
@@ -57,24 +57,24 @@ const socketFunction = {
 
         
         if(user.miningStatus){
-            return socketObj.emit('mining-status',{
+            return socketObj.emit('initiate',{"MiningStatus":{
                 "error":true,
                 "error-message":"Mining session already started",
                 "mining-started-at": user.lastMiningStartedAt,
                 "userDetails": user
-            })
+            }})
         }
 
         user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime, lastMiningStartedAt:currentTime })
 
         console.log('mining session started')
 
-        socketObj.emit('mining-status',{"error":false,
+        socketObj.emit('initiate',{"MiningStatus":{"error":false,
              "error-message":"",
             "started-session":true,
             "started-at":currentTime,
             "userDetails":user
-            }) 
+            }}) 
     },
     pingInactiveMiners: async (socketObj,uid,uidSocketPair)=>{
         const user = await User.findOne({_id:uid},{usersReferred:1})
