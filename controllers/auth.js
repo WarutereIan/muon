@@ -142,6 +142,10 @@ signup: async (req,res)=>{
 resetPassword: async (req,res)=>{
     const {uid} = req.params
     const {oldPassword,newPassword,newPasswordConfirmation} = req.body
+    
+    let user = await User.findById(uid)
+
+    let dbOldHashedPass = user.password
 
     if(newPassword !== newPasswordConfirmation){
         return res.json({
@@ -156,12 +160,19 @@ resetPassword: async (req,res)=>{
             "error":true,
             "error-message":"New password cannot be old password",
             "password-change-success":false
-        })
-    }
+        })}
+    
+    
+    else if(!compare(oldPassword,dbOldHashedPass) ){
+        return res.json({
+            "error":true,
+            "error-message":"Old passwords do not match",
+            "password-change-success":false
+    })}
 
     else{
         var passwordReplacement = await hash(newPassword,10)
-        const user = await User.findByIdAndUpdate({_id:uid},{password: passwordReplacement})
+        user  = await User.findByIdAndUpdate({_id:uid},{password: passwordReplacement})
 
         return res.json({
             "error": false,
