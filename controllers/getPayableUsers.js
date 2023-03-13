@@ -13,7 +13,7 @@ will generate list of user accounts payable per day
 */
 
 
-const usersArray = []
+//let usersArray = []
 
 const MONGO_URI = process.env.MONGO_URI
 
@@ -29,6 +29,8 @@ connect(MONGO_URI,
 
 //query all verified users  from db and push them to array if logged in in last 24h
   async function getUsers (){
+
+    let usersArray = []
 
     try{
     for await (const user of User.find({verified: true, miningStatus: true},{

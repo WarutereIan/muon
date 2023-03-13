@@ -147,6 +147,7 @@ resetPassword: async (req,res)=>{
 
     let dbOldHashedPass = user.password
 
+
     if(newPassword !== newPasswordConfirmation){
         return res.json({
             "error":true,
@@ -163,7 +164,7 @@ resetPassword: async (req,res)=>{
         })}
     
     
-    else if(!compare(oldPassword,dbOldHashedPass) ){
+    else if(!await compare(oldPassword,dbOldHashedPass) ){
         return res.json({
             "error":true,
             "error-message":"Old passwords do not match",
