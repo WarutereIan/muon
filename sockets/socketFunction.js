@@ -1,11 +1,14 @@
 import User from "../models/User.js"
 import Wallet from "../models/Wallet.js"
 import ethersFunctions from "../config/ethersConfig.js"
+import { response } from "express"
+
 
 const socketFunction = {
     balance: async (socketObj,uid)=>{
 
-        const userSocketId = socketObj.id
+        try{
+        //const userSocketId = socketObj.id
         let invitedUsers = []
         let invitee
         let activeMinersCount = 0
@@ -46,14 +49,36 @@ const socketFunction = {
          
             }}
         )
+        }
+        catch(err){
+            socketObj.emit('error',{
+                "error":true,
+                "error-message":err.message
+            })
+            socketObj.disconnect(true)
+        }
+    }
 
-
-    },
+    ,
     startMining: async (socketObj,uid)=>{
-        const userSocketId = socketObj.id
+        //const userSocketId = socketObj.id
         const currentTime = new Date()
         // const timeString = JSON.stringify(currentTime)
+
+        
+        try{
         var user = await User.findById(uid)
+
+        console.log('user \n', user)
+
+        if(!user){
+            return socketObj.emit('initiate',{"MiningStatus":{
+                "error":true,
+                "error-message":"User id does not exist ",
+                "mining-started-at": null,
+                "userDetails": null
+            }})
+        }
 
         
         if(user.miningStatus){
@@ -75,8 +100,19 @@ const socketFunction = {
             "started-at":currentTime,
             "userDetails":user
             }}) 
-    },
+    }
+    catch(err){
+        console.log(err)
+        socketObj.emit('error',{
+            "error":true,
+            "error-message":err
+        })
+        socketObj.disconnect(true)
+    }
+}
+,
     pingInactiveMiners: async (socketObj,uid,uidSocketPair)=>{
+        try{
         const user = await User.findOne({_id:uid},{usersReferred:1})
         var i = 0
 
@@ -97,6 +133,17 @@ const socketFunction = {
         "ping-status":"inactive online miners received ping"
     })
     }
+catch(err){
+    console.log(err)
+        socketObj.emit('error',{
+            "error":true,
+            "error-message":err
+        })
+        socketObj.disconnect(true)
+    }
 }
+
+}
+
 
 export default socketFunction

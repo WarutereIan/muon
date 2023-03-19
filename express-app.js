@@ -33,9 +33,11 @@ const app = express();
 connect(MONGO_URI,
     (err)=>{
         if(err){
-            return console.log(err)
+            return console.log('failed to connect to db',err)
         }
+        else{
         console.log('connected to db successfully')
+        }
     })
 
 app.use(json())

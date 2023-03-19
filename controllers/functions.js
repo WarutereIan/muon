@@ -10,6 +10,8 @@ const functions = {
         let invitee
         let activeMinersCount = 0
         const {uid} = req.params
+
+        try{
         const wallet = await Wallet.findOne({userId:uid},{address: 1})
         const address = wallet.address
         var user = await User.findOne({_id:uid},{usersReferred: 1})
@@ -43,16 +45,30 @@ const functions = {
          
          
          })
+        }
+        catch(err){
+            console.log(err)
+            res.status(504).send('internal server error')
+        }
     },
 
     //uses the user's account id as the referral code, which new users will use for signup
     inviteUser: async (req,res)=>{
         const {uid} = req.params
+
+        try{
         res.json({"error":false,"error-message":"","inviteCode":uid})
+        }
+        catch(err){
+            console.log(err)
+            res.status(504).send('internal server error')
+        }
     },
     //start mining session button
     startMiningSession: async (req,res)=>{
         const {uid} = req.params 
+
+        try{
         const currentTime = new Date()
         const timeString = JSON.stringify(currentTime)
         var user = await User.findById(uid)
@@ -76,11 +92,18 @@ const functions = {
             "started-at":currentTime,
             "userDetails":user
             }) 
+        }
+        catch(err){
+            console.log(err)
+            res.status(504).send('internal server error')
+        }
     },
     //check if miner active, if not set miningStatus to false
     checkMiningSessionTimeout: async (req,res)=>{
+
+        try{
         const SessionCheckTime = new Date()
-        console.log(`checkMiningSessionTimeout script running at ${SessionCheckTime}`)
+        console.log(`checkMiningSessionTimeout script running at ${SessionCheckTime} \n`)
         for await (const user of User.find({verified: true, miningStatus: true},{username:1,lastlogin: 1})){
             
             const currentTime = new Date()
@@ -97,6 +120,11 @@ const functions = {
                 `)
             }
         }
+    }
+    catch(err){
+        console.log(`error running checkMiningSessionTimeout: \n`,err)
+        
+    }
     }
     
     

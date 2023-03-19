@@ -71,7 +71,8 @@ connect(MONGO_URI,
     console.log(usersArray)
     }
 catch(e){
-    console.log(e)
+    console.log('error fetching payable users: \n \n',e)
+
 }
 
 return usersArray

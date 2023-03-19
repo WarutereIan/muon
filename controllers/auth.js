@@ -5,6 +5,7 @@ import Wallet from '../models/Wallet.js'
 import ethersFunctions from '../config/ethersConfig.js'
 import * as dotenv from 'dotenv'
 import services from '../services/services.js'
+import { response } from 'express'
 dotenv.config()
 
 const { sign, verify, JsonWebTokenError } = pkg
@@ -17,6 +18,8 @@ const auth ={
     var user
 
     const {username,pass,email} = req.body
+
+    try{
     if(username){
         user = await User.findOne({username})
 
@@ -57,6 +60,7 @@ const auth ={
     
    
     return res.json({"error":false,"error-message":"","login-success":true,"userDetails": user})
+    
     }
     else{
         res.json({"error":true,
@@ -65,6 +69,11 @@ const auth ={
         "username":user.username,
         "email":user.email})
     }
+}
+catch(err){
+    console.log(`error logging in for ${username}: \n`, err)
+    res.status(504).send('internal server error')
+}
 }, 
 signup: async (req,res)=>{
     try{
@@ -134,7 +143,7 @@ signup: async (req,res)=>{
     }
     catch(error){
         console.log(error)
-        res.send(error)
+        res.status(504).send(error)
     }
 
 },
@@ -142,6 +151,8 @@ signup: async (req,res)=>{
 resetPassword: async (req,res)=>{
     const {uid} = req.params
     const {oldPassword,newPassword,newPasswordConfirmation} = req.body
+
+    try{
     
     let user = await User.findById(uid)
 
@@ -182,6 +193,10 @@ resetPassword: async (req,res)=>{
             "user-details": user
 
         })
+    }}
+    catch(err){
+        console.log(`error resetting password for ${uid} \n`, err)
+        res.status(504).send('Internal server error. Please wait before trying again')
     }
 }, 
 

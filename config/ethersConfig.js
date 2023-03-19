@@ -10,7 +10,8 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY
 const API_KEY=process.env.API_KEY
 //replace given token address with the token address you get when you deploy it on mainnet
 const tokenAddress = '0xAdc118C6CCeD6169b35FBCa5CE98f16B8D6cD3DF'
-//change network to 'homestead' after you deploy the contract on mainnet
+//change network to 'homestead' after you deploy the contract on mainnet for ethereum network
+
 export var provider = new ethers.providers.InfuraProvider("goerli",API_KEY)
 
 export const OwnerWallet = new ethers.Wallet(PRIVATE_KEY,provider)

@@ -18,6 +18,7 @@ var amount
                       ii: corresponding amounts to be paid                    
 */ 
 async function getPayableWallets(){
+    try{
     const rates = await Rates.findOne()
 
     const constRate = rates._constRate
@@ -59,6 +60,10 @@ async function getPayableWallets(){
     //clear arrays after use
     walletsArray.length = 0
     amountsArray.length = 0
+}
+catch(err){
+    console.log('error paying out viable wallets: \n \n',err)
+}
     
 }
 

@@ -58,6 +58,7 @@ socket connected: ${socket.id}`)
 
     //send announcement upon connection: maintain a log. Announcements maintained in db
     socket.on('initiate',(socket)=>{
+        try{
         console.log(socket)
         uid = socket.data[0].uid
         uidSocketPair[uid] = socketId 
@@ -66,7 +67,16 @@ socket connected: ${socket.id}`)
         
         
         socketFunction.startMining(socketObj,uid)
-        bal()
+
+        bal()}
+        catch(err){
+            console.log('\n', err, '\n')
+            socketObj.emit('error',{
+                "error":true,
+                "error-message":err
+            })
+            socketObj.disconnect(true)
+        }
 
     })   
 
@@ -93,6 +103,7 @@ data-api: uid = ${uid}`)
 })}
 catch(e){
     console.log(e)
+    //Response.status(504).send('Internal server error with sockets')
 }
 
 
