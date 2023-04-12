@@ -12,14 +12,14 @@ import * as nodeCron from 'node-cron'
 //var i = 0
 
     //payout every hour
-    const jobPayWalletsHourly = nodeCron.schedule(
-        "59 * * * * *",()=>{
+    const jobPayWallets = nodeCron.schedule(
+        "20 * * * * *",()=>{
             
             getPayableWallets()})
     
             //check for inactive users every 20 min and deactivate
     const jobResetInactiveMiningSessions = nodeCron.schedule(
-        "59 20 * * * *",()=>{
+        "59 * * * * *",()=>{
             
             functions.checkMiningSessionTimeout()
         })

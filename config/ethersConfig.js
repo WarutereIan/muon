@@ -9,10 +9,14 @@ dotenv.config()
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 const API_KEY=process.env.API_KEY
 //replace given token address with the token address you get when you deploy it on mainnet
-const tokenAddress = '0xAdc118C6CCeD6169b35FBCa5CE98f16B8D6cD3DF'
-//change network to 'homestead' after you deploy the contract on mainnet for ethereum network
+const tokenAddress = '0x37b9B35C510Abc89b020520E249F3BfDDD1fd335'
 
-export var provider = new ethers.providers.InfuraProvider("goerli",API_KEY)
+//Using private chain for axtrum as json rpc provider
+export var provider = new ethers.providers.JsonRpcProvider('http://143.42.139.77:8546')
+
+provider.getGasPrice().then(
+        res=> console.log('\n estimated gas price : ',res)
+)
 
 export const OwnerWallet = new ethers.Wallet(PRIVATE_KEY,provider)
 export const contract = new ethers.Contract(tokenAddress,axtrumABI,OwnerWallet)

@@ -5,6 +5,7 @@ import Wallet from '../models/Wallet.js'
 //import { BigNumber, ethers } from 'ethers'
 import { contract } from '../config/ethersConfig.js'
 import Rates from "../admin/models/miningRates.js"
+import { ethers } from "ethers"
 
 var userids = []
 var amountsArray = []
@@ -36,16 +37,16 @@ async function getPayableWallets(){
         walletsArray.push(wallet.address)
         var addr = wallet.address
         var BigIntReferrals = userObj["referrals"]
-        amountInt = constRate+(BigIntReferrals*referralRateModifier)
+        amountInt = 10000+(BigIntReferrals*referralRateModifier)
         
-        amount = BigInt(amountInt*10**18)
+        //amountInt = constRate+(BigIntReferrals*referralRateModifier)
+
+        amount = BigInt(amountInt*10**18) 
     
         amountsArray.push(amount)
         //send tokens from owner's wallet
-        await contract.transfer(addr,amount)
+        await contract.transfer(addr,amount,  {gasPrice: ethers.utils.parseUnits('1', 'wei'), gasLimit: ethers.utils.parseUnits('500000', 'wei')})
         
-
-
     if(i == userids.length - 1){
         console.log(`paid wallets are as below: `)
         console.log(walletsArray)
@@ -66,8 +67,5 @@ catch(err){
 }
     
 }
-
-
- 
 
 export default getPayableWallets
