@@ -43,8 +43,9 @@ connect(MONGO_URI,
     const userId = id.replace(/([^a-z0-9]+)/gi, '')
 
     /*differenceInh gives the period after which users logins are to be checked. No longer relevant in new iteration*/
-   const lastloginInstance = user.lastlogin
+   const lastloginInstance = user.lastMiningStartedAt
    const timeNow = new Date()
+   
     const difference = timeNow - lastloginInstance
     const differenceInh = difference/(60*60*1000)    
 

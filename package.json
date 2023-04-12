@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/WarutereIan/muon#readme",
   "dependencies": {
+    "apn": "^2.2.0",
     "automatic-otp": "^1.0.4",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
@@ -29,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.5",
     "node-cron": "^3.0.2",
+    "node-pushnotifications": "^2.0.3",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
     "otplib": "^12.0.1",
