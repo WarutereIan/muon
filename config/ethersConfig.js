@@ -8,8 +8,9 @@ dotenv.config()
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 const API_KEY=process.env.API_KEY
+const mnemonic = process.env.MNEMONIC
 //replace given token address with the token address you get when you deploy it on mainnet
-const tokenAddress = '0x37b9B35C510Abc89b020520E249F3BfDDD1fd335'
+const tokenAddress = '0x3490c0C622c107Ab6f135946dd62B145FC32BbCA'
 
 //Using private chain for axtrum as json rpc provider
 export var provider = new ethers.providers.JsonRpcProvider('http://143.42.139.77:8546')
@@ -21,14 +22,19 @@ provider.getGasPrice().then(
 export const OwnerWallet = new ethers.Wallet(PRIVATE_KEY,provider)
 export const contract = new ethers.Contract(tokenAddress,axtrumABI,OwnerWallet)
 
+//const walletFromMnemonic = ethers.Wallet.fromMnemonic(mnemonic).connect(provider)
+
+//console.log(`\n wallet from mnemonic:`, walletFromMnemonic)
+
 const ethersFunctions = {
     getAccountBalance: async (address)=>{
-        const balanceRaw = await contract.balanceOf(address)
+        const balanceRaw = await provider.getBalance(address)
         var balance = ethers.utils.formatUnits(balanceRaw)
         return balance
     },
     createWallet: async ()=>{
-        const wallet = await ethers.Wallet.createRandom().connect(provider)
+        const wallet =  ethers.Wallet.createRandom().connect(provider)
+
         return wallet
     }      
     }   

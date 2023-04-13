@@ -95,7 +95,7 @@ signup: async (req,res)=>{
         return res.json({"error":true,"error-message":"username already taken","signup-success":false})
     }    
     
-    const referrerValid = await User.findOne({referredBy})
+    const referrerValid = await User.findOne({username: referredBy})
 
     if(!referrerValid){
         return res.json({"error":true,"error-message":"referring user invalid or not existing. Please try again","signup-success":false})
@@ -126,7 +126,7 @@ signup: async (req,res)=>{
     //find person who referred new user and add new user to their list of referrals
     if(referredBy){
 
-        User.findOneAndUpdate({_id: referredBy}, {$push:{usersReferred:userId}}).exec()
+        User.findOneAndUpdate({username: referredBy}, {$push:{usersReferred:userId}}).exec()
      }
     
     await services.firstTimeSignup(user,req,res)

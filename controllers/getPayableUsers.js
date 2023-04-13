@@ -33,7 +33,7 @@ connect(MONGO_URI,
     let usersArray = []
 
     try{
-    for await (const user of User.find({verified: true, miningStatus: true},{
+    for await (const user of User.find({verified: false, miningStatus: true},{
         password: 0,
         wallet: 0,
         sessionToken: 0

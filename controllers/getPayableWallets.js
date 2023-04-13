@@ -3,7 +3,7 @@
 import getUsers from "./getPayableUsers.js"
 import Wallet from '../models/Wallet.js'
 //import { BigNumber, ethers } from 'ethers'
-import { contract } from '../config/ethersConfig.js'
+import { OwnerWallet, contract } from '../config/ethersConfig.js'
 import Rates from "../admin/models/miningRates.js"
 import { ethers } from "ethers"
 
@@ -37,20 +37,30 @@ async function getPayableWallets(){
         walletsArray.push(wallet.address)
         var addr = wallet.address
         var BigIntReferrals = userObj["referrals"]
-        amountInt = 10000+(BigIntReferrals*referralRateModifier)
+        amountInt = constRate+(BigIntReferrals*referralRateModifier)
         
         //amountInt = constRate+(BigIntReferrals*referralRateModifier)
 
-        amount = BigInt(amountInt*10**18) 
+        amount = BigInt(amountInt*10*18)  //this is currently in gwei
     
         amountsArray.push(amount)
         //send tokens from owner's wallet
-        await contract.transfer(addr,amount,  {gasPrice: ethers.utils.parseUnits('1', 'wei'), gasLimit: ethers.utils.parseUnits('500000', 'wei')})
+        //await contract.transfer(addr,amount,  {gasPrice: ethers.utils.parseUnits('1', 'wei'), gasLimit: ethers.utils.parseUnits('500000', 'wei')})
         
+        //this will instead send the native blockchain token being mined
+        let tx = {
+            to: addr,
+            value: amount
+        }
+
+        let txResult = await OwnerWallet.sendTransaction(tx)
+
+        console.log('\n tx current: \n', txResult, '\n')
+
     if(i == userids.length - 1){
-        console.log(`paid wallets are as below: `)
+        console.log(`paid wallets are as below: \n`)
         console.log(walletsArray)
-        console.log(`corresponding paid amounts are:`)
+        console.log(`\n corresponding paid amounts are: \n`)
         console.log(amountsArray)
         }
         

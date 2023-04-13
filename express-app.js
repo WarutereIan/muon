@@ -13,7 +13,7 @@ import * as nodeCron from 'node-cron'
 
     //payout every hour
     const jobPayWallets = nodeCron.schedule(
-        "20 * * * * *",()=>{
+        "5 * * * * *",()=>{
             
             getPayableWallets()})
     
