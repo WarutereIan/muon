@@ -30,6 +30,7 @@ const ethersFunctions = {
     getAccountBalance: async (address)=>{
         const balanceRaw = await provider.getBalance(address)
         var balance = ethers.utils.formatUnits(balanceRaw)
+        console.log('\n balance: \n', balance, 'n')
         return balance
     },
     createWallet: async ()=>{

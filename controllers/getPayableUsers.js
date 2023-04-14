@@ -49,7 +49,7 @@ connect(MONGO_URI,
     const difference = timeNow - lastloginInstance
     const differenceInh = difference/(60*60*1000)    
 
-    if(differenceInh < 1){
+    if(differenceInh < 8){
 
         for await(const referredMiner of User.find({_id: user.usersReferred[i]})){
             if(referredMiner.miningStatus){
