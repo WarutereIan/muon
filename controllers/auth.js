@@ -129,7 +129,11 @@ signup: async (req,res)=>{
         User.findOneAndUpdate({username: referredBy}, {$push:{usersReferred:userId}}).exec()
      }
     
-    await services.firstTimeSignup(user,req,res)
+    
+     //email activation:
+     //await services.firstTimeSignup(user,req,res)
+    
+    
     //generate token to keep user signed in
     const token = await sign({userId},SECRET_KEY,{expiresIn: '1h'})
     console.log(`user token: ${token}`)

@@ -55,9 +55,11 @@ const functions = {
     //uses the user's account id as the referral code, which new users will use for signup
     inviteUser: async (req,res)=>{
         const {uid} = req.params
+        let user = await User.findById(uid).select('username')
+        let inviteCode = user.username
 
         try{
-        res.json({"error":false,"error-message":"","inviteCode":uid})
+        res.json({"error":false,"error-message":"","inviteCode":inviteCode})
         }
         catch(err){
             console.log(err)

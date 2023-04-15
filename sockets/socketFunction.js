@@ -72,7 +72,7 @@ const socketFunction = {
         console.log('user \n', user)
 
         if(!user){
-            return socketObj.emit('initiate',{"MiningStatus":{
+            return socketObj.emit('error',{"MiningStatus":{
                 "error":true,
                 "error-message":"User id does not exist ",
                 "mining-started-at": null,
@@ -82,6 +82,9 @@ const socketFunction = {
 
         
         if(user.miningStatus){
+
+            user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime, lastMiningStartedAt:currentTime })
+
             return socketObj.emit('initiate',{"MiningStatus":{
                 "error":true,
                 "error-message":"Mining session already started",
