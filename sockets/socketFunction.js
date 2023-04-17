@@ -82,6 +82,9 @@ const socketFunction = {
         
         try{
         var user = await User.findById(uid)
+        const wallet = await Wallet.find({userId:uid},{address: 1})
+        let address = wallet[0].address
+        var balance = await ethersFunctions.getAccountBalance(address)
 
         
         if(!user){
@@ -109,6 +112,7 @@ const socketFunction = {
                 "invited-users": invitedUsers,
                 "mining-expires-at":user.miningExpiresAt
                 },
+                "accountTokenBalance": balance,
                 "userDetails": user
             }})
         }
@@ -127,6 +131,7 @@ const socketFunction = {
             "active-miners":activeMinersCount,
             "invited-users": invitedUsers,
             },
+            "accountTokenBalance": balance,
             "userDetails":user
             }}) 
     }
