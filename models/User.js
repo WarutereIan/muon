@@ -54,6 +54,9 @@ const UserSchema = new Schema({
     },
     lastMiningStartedAt:{
         type: Date
+    },
+    miningExpiresAt:{
+        type:Date
     }
 
 
