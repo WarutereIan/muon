@@ -29,7 +29,7 @@ export const contract = new ethers.Contract(tokenAddress,axtrumABI,OwnerWallet)
 const ethersFunctions = {
     getAccountBalance: async (address)=>{
         const balanceRaw = await provider.getBalance(address)
-        var balance = ethers.utils.formatUnits(balanceRaw)
+        var balance = ethers.utils.formatUnits(balanceRaw, 'mwei') //will display axtrum units in 'mwei'
         console.log('\n balance: \n', balance, 'n')
         return balance
     },
