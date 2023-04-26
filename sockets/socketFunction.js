@@ -76,7 +76,7 @@ const socketFunction = {
 
         let miningExpiresAt = new Date()
 
-        miningExpiresAt.setHours(miningExpiresAt.getHours()+3) //change number value here to change mining length displayed
+        miningExpiresAt.setHours(miningExpiresAt.getHours()+24) //change number value here to change mining length displayed
 
         console.log('\n mining start:', currentTime, '\n mining ends at:', miningExpiresAt)
         

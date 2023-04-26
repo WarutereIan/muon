@@ -106,16 +106,16 @@ const functions = {
         try{
         const SessionCheckTime = new Date()
         console.log(`checkMiningSessionTimeout script running at ${SessionCheckTime} \n`)
-        for await (const user of User.find({verified: true, miningStatus: true},{username:1,lastlogin: 1})){
+        for await (const user of User.find({verified: true, miningStatus: true},{username:1,lastMiningStartedAt: 1})){
             
             const currentTime = new Date()
-            const differenceInh = (currentTime - user.lastlogin)/(60*60*1000)
+            const differenceInh = (currentTime - user.lastMiningStartedAt)/(60*60*1000)
             
 
             const id = JSON.stringify(user._id)
             const userId = id.replace(/([^a-z0-9]+)/gi, '')
             
-            if(differenceInh >= 1 ){
+            if(differenceInh >= 24 ){
                 await User.findOneAndUpdate({_id:userId},{miningStatus:false})
                 console.log(`
                 user: ${user.username}, id: ${user._id} mining session timed out at ${currentTime}
