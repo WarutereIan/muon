@@ -2,7 +2,9 @@ import * as dotenv from 'dotenv'
 import User from '../models/User.js'
 import OTP from 'automatic-otp'
 // import auth from '../controllers/auth.js'
+import nodemailer from 'nodemailer'
 dotenv.config()
+
 
 const otp = new OTP() 
 const otpObject = otp.generate(6,{alphabet:false,specialCharacters:false})
@@ -14,6 +16,7 @@ let token
 
 const services = {
      sendOTP:  async (req, res)=>{
+        try{
         const {uid} = req.params
 
         const user = await User.findOne({_id:uid},{email:1, verified:1})
@@ -53,9 +56,14 @@ const services = {
 
     
     }
+catch(err){
+    console.error(err)
+    res.json({"error":true,"error-message":err})
+}}
 ,
 
     verifyOTP:async (req, res)=>{
+        
         const {verificationCode} = req.body
         const {uid} = req.params
 
@@ -75,12 +83,15 @@ const services = {
         }
         catch(error){
             console.log(error)
+            res.json({"error":true,"error-message":error})
         }
-    },
+        }
+    ,
     firstTimeSignup: async (user,req,res)=>{
         
         const uid = user._id
         const email = user.email
+        try{
         if(user.verified){
             return res.json({"error":true,"error-message":"Email already verified"})
         }
@@ -110,8 +121,13 @@ const services = {
             console.log(`verification email sent with below details: 
                         ${info}`)
         }})
-   
-    },
+    }
+    catch(err){
+        console.error(err)
+        res.json({"error":true,"error-message":err})
+    }}
+    
+    ,
     emailLinkVerification: async (req,res)=>{
         const {uid,token} = req.params
         
@@ -129,6 +145,7 @@ const services = {
         }
         catch(error){
             console.log(error)
+            res.json({"error":true,"error-message":error})
         }
     }
 }
