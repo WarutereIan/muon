@@ -48,10 +48,10 @@ const services = {
 
     transporter.sendMail(options, (error,info)=>{
         if(error) {console.log(error)
-        res.json({"error":true,"error-message":"error. contact systems admin"})}
+        return res.json({"error":true,"error-message":"error sending email"})}
         else {
             console.log(info)
-        res.json({"error":false, "error-message":'Verification email sent'})
+        return res.json({"error":false, "error-message":'Verification email sent'})
         }})
 
     
