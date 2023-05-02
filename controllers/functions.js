@@ -106,7 +106,7 @@ const functions = {
         try{
         const SessionCheckTime = new Date()
         console.log(`checkMiningSessionTimeout script running at ${SessionCheckTime} \n`)
-        for await (const user of User.find({verified: true, miningStatus: true},{username:1,lastMiningStartedAt: 1})){
+        for await (const user of User.find({ miningStatus: true},{username:1,lastMiningStartedAt: 1})){  // add verfied: true as one of the checks
             
             const currentTime = new Date()
             const differenceInh = (currentTime - user.lastMiningStartedAt)/(60*60*1000)

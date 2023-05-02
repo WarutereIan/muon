@@ -3,11 +3,6 @@ import Wallet from "../models/Wallet.js"
 import ethersFunctions from "../config/ethersConfig.js"
 import { response } from "express"
 
-
-let invitedUsers = []
-let invitee
-let activeMinersCount = 0
-
 const socketFunction = {
     balance: async (socketObj,uid)=>{
 
@@ -22,6 +17,9 @@ const socketFunction = {
         var user = await User.findOne({_id:uid},{__v:0})
         var invitedObj = user.usersReferred
         var usersArray = Object.values(invitedObj)
+        let invitedUsers = []
+        let invitee
+        let activeMinersCount = 0
         
         //get list of invited users
         for await(const i of usersArray){
@@ -95,11 +93,35 @@ const socketFunction = {
                 "userDetails": null
             }})
         }
-
         
         if(user.miningStatus){
 
-            user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime, lastMiningStartedAt:currentTime, miningExpiresAt:miningExpiresAt },{new:true})
+        let invitedUsers = []
+        let invitee
+        let activeMinersCount = 0
+
+            user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime, miningExpiresAt:miningExpiresAt },{new:true})
+
+            var invitedObj = user.usersReferred
+        var usersArray = Object.values(invitedObj)
+
+        
+
+            //get list of invited users
+        for await(const i of usersArray){
+            invitee = await User.findOne({_id:i},{miningStatus: 1,
+                username: 1,
+                _id: 0})
+            invitedUsers.push(invitee)     
+        }
+
+        //get total number of active users/miners
+        for(var i = 0; i<invitedUsers.length; i++){
+            if(invitedUsers[i].miningStatus){
+                activeMinersCount++
+            }
+        }
+
 
             return socketObj.emit('initiate',{"data_api":{
                 

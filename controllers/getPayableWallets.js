@@ -37,13 +37,14 @@ async function getPayableWallets(){
         walletsArray.push(wallet.address)
         var addr = wallet.address
         var BigIntReferrals = userObj["referrals"]
-        amountInt = constRate+(BigIntReferrals*referralRateModifier)
+        amountInt = JSON.stringify(0.00014+(BigIntReferrals*0.00007)) 
         
-        //amountInt = constRate+(BigIntReferrals*referralRateModifier)
 
-        amount = BigInt(amountInt*10*18)  //this is currently in gwei
+        //amountInt = constRate+(BigIntReferrals*referralRateMkodifier)
+
+        amount = ethers.utils.parseUnits(amountInt, 'ether')  //this is currently in gwei
     
-        amountsArray.push(amount)
+        amountsArray.push(amountInt)
         //send tokens from owner's wallet
         //await contract.transfer(addr,amount,  {gasPrice: ethers.utils.parseUnits('1', 'wei'), gasLimit: ethers.utils.parseUnits('500000', 'wei')})
         
@@ -55,7 +56,7 @@ async function getPayableWallets(){
 
         let txResult = await OwnerWallet.sendTransaction(tx)
 
-        console.log('\n tx current: \n', txResult, '\n')
+        //console.log('\n tx current: \n', txResult, '\n')
 
     if(i == userids.length - 1){
         console.log(`paid wallets are as below: \n`)
