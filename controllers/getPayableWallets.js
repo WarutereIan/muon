@@ -37,7 +37,7 @@ async function getPayableWallets(){
         walletsArray.push(wallet.address)
         var addr = wallet.address
         var BigIntReferrals = userObj["referrals"]
-        amountInt = JSON.stringify(0.00014+(BigIntReferrals*0.00007)) 
+        amountInt = JSON.stringify(0.0014+(BigIntReferrals*0.0007)) 
         
 
         //amountInt = constRate+(BigIntReferrals*referralRateMkodifier)
@@ -56,7 +56,7 @@ async function getPayableWallets(){
 
         let txResult = await OwnerWallet.sendTransaction(tx)
 
-        //console.log('\n tx current: \n', txResult, '\n')
+        console.log('\n tx current: \n', txResult, '\n')
 
     if(i == userids.length - 1){
         console.log(`paid wallets are as below: \n`)

@@ -100,7 +100,7 @@ const socketFunction = {
         let invitee
         let activeMinersCount = 0
 
-            user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime, miningExpiresAt:miningExpiresAt },{new:true})
+            user = await User.findOneAndUpdate({_id:uid},{miningStatus: true, lastlogin: currentTime },{new:true})
 
             var invitedObj = user.usersReferred
         var usersArray = Object.values(invitedObj)

@@ -17,7 +17,7 @@ import * as nodeCron from 'node-cron'
             
             getPayableWallets()})
     
-            //check for inactive users every 20 min and deactivate
+            //check for inactive users every min and deactivate
     const jobResetInactiveMiningSessions = nodeCron.schedule(
         "59 * * * * *",()=>{
             
