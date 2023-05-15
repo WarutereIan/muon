@@ -36,7 +36,7 @@ async function bal(){
             })
         } 
            
-           ,10000)
+           ,30000)
 }
 
 try{
@@ -90,7 +90,9 @@ data-api: uid = ${uid}`)
     bal()
     })*/
 
-    socket.on('pingInactiveMiners',async function(){socketFunction.pingInactiveMiners(socketObj,uid,uidSocketPair)})
+    socket.on('pingInactiveMiners',async function(socket){
+        let uid = socket.data[0].uid
+        socketFunction.pingInactiveMiners(socketObj,uid,uidSocketPair)})
 
     socket.on('disconnect',(socket)=>{
         delete uidSocketPair[uid]

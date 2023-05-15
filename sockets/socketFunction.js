@@ -169,13 +169,14 @@ const socketFunction = {
 ,
     pingInactiveMiners: async (socketObj,uid,uidSocketPair)=>{
         try{
-        const user = await User.findOne({_id:uid},{usersReferred:1})
+        const user = await User.findById(uid)
+        console.log('user', user)
         var i = 0
 
         for await(const referredMiner of User.find({_id: user.usersReferred[i]})){
             if(!referredMiner.miningStatus){
                 var socketId = uidSocketPair[uid]
-                socketObj.to(socketId).emit('',{
+                socketObj.to(socketId).emit('pingNotification',{
                  "error":false,
                  "error-message": '',
                  "ping-message":`user ${user.username} sent you a ping!`    
@@ -183,7 +184,7 @@ const socketFunction = {
             i++    
             }
         }  
-    socketObj.emit('pingInactiveMiners',{
+    socketObj.emit('pingNotification',{
         "error":false,
         "error-message": '',
         "ping-status":"inactive online miners received ping"
