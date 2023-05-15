@@ -11,9 +11,9 @@ import * as nodeCron from 'node-cron'
 //i and j prevent cron jobs from running before an hour fully elapses when server is restarted
 //var i = 0
 
-    //payout every hour
+    //payout every second
     const jobPayWallets = nodeCron.schedule(
-        "1 * * * * *",()=>{
+        "2 * * * * *",()=>{
             
             getPayableWallets()})
     
